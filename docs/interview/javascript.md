@@ -100,4 +100,6 @@ function throttle(f, interval) {
 
 ## 实现 Promise
 
-<code src="../../src/demos/foo1.tsx"></code>
+需要遵循[Promise A+](https://promisesaplus.com/)规范。
+
+<code src="../../src/demos/foo.jsx"></code>

@@ -1,31 +1,15 @@
-class ToyPromise {
-  static resolve() {}
+export default () => {
+  const controller = {};
 
-  static reject() {}
+  const promise = new Promise((resolve, reject) => {
+    controller.resolve = argv => resolve(argv);
+    controller.reject = argv => reject(argv);
+  });
 
-  status = 'PENDING';
+  promise
+    .then(argv => Promise.reject('err1'))
+    .then(argv => console.log(argv))
+    .catch(reason => console.log(reason));
 
-  constructor(a: PromiseConstructor) {
-    const resolve = value => {
-      this.status = 'RESOLVED';
-    };
-  }
-
-  then() {}
-
-  catch() {}
-}
-
-new Promise((resolve, reject) => {});
-
-Promise.resolve();
-
-Promise.reject();
-
-Promise.resolve()
-  .then(value => value)
-  .then(value => value);
-
-Promise.reject()
-  .catch(err => err)
-  .catch(err => err);
+  controller.resolve('aaa');
+};
