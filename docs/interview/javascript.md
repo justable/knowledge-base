@@ -392,4 +392,205 @@ Promise.all([promise1, promise3]).then(values => {
 // https://blog.csdn.net/u014298440/article/details/105412348
 ```
 
-  <!-- <code src="../../src/components/ToyPromise/index.ts"></code> -->
+## new 操作符的过程
+
+1. 创建一个空对象 A
+2. 设置 A 的`__proto__`指向构造器的 prototype
+3. 将构造器的 this 指向 A 并执行构造器
+4. 如果构造器返回的是对象 B 则将 B 作为实例返回，反之则返回 A
+
+```js
+function _new(constructor, ...args) {
+  let obj = {};
+  Object.setPrototypeOf(obj, constructor.prototype); // obj.__proto__ = constructor.prototype
+  let result = constructor.apply(obj, args);
+  return result instanceof Object ? result : obj;
+}
+```
+
+## 谈一谈 iterator
+
+任何数据结构只要部署 iterator 接口，就可以完成遍历操作，即依次处理该数据结构的所有成员。iterator 接口主要供 for...of 消费，后者是 ES6 的一种新的遍历命令。
+
+接口格式：
+
+```js
+const iter = {
+  [Symbol.iterator]() {
+    return {
+      next() {
+        return { value: 1, done: false };
+      },
+      return() {
+        return { done: true };
+      },
+      throw() {
+        return { done: true };
+      },
+    };
+  },
+};
+```
+
+## 实现原型链继承
+
+```js
+function Person(name) {
+  this.sign = 'Person';
+  this.name = name;
+}
+Person.prototype.logName = function() {
+  console.log(`(${this.sign})名字: ${this.name}`);
+};
+function Singer(name, debut) {
+  Person.call(this, name);
+  this.sign = 'Singer';
+  this.debut = debut;
+}
+Singer.prototype = Object.create(Person.prototype);
+Singer.prototype.constuctor = Singer;
+Singer.prototype.logDebut = function() {
+  console.log(`(${this.sign})出道年份: ${this.debut}`);
+};
+
+const jay = new Singer('Jay', 2000);
+jay.logDebut(); // (Singer)出道年份: 2000
+jay.logName(); // (Singer)名字: Jay
+```
+
+## ES5 继承的 this 和 ES6 继承的 this 什么区别
+
+在 ES5 继承中，会优先创建子类的实例对象 this，再让父类构造函数与这个 this 绑定。
+
+在 ES6 继承中，会通过 super()追溯到最顶层的构造函数，优先创建顶层的实例对象 this，再通过子类的构造函数修改这个 this。
+
+## 手写 memorize 函数缓存执行结果
+
+```js
+function memorize(fn) {
+  const cache = {};
+  return function(...args) {
+    const key = JSON.stringify(args);
+    return cache[key] || (cache[key] = fn.apply(null, args));
+  };
+}
+
+const memorizedFn = memorize((a, b) => a + b);
+memorizedFn(1, 2); // first
+memorizedFn(1, 2); // cached
+```
+
+## 解析 URL 的 querystring
+
+> 推荐使用 qs 包
+
+- 如何正确转义汉字
+- 如何正确处理数组
+- 如何处理各种复杂的嵌套对象
+
+```js
+function parse(url) {
+  const qs = new URL(url).search.slice(1); // 或使用正则截取
+  return qs.split('&').reduce((result, s) => {
+    let [key, value = ''] = s.split('=');
+    key = decodeURIComponent(key);
+    value = decodeURIComponent(value);
+    const last = result[key];
+    if (last) {
+      if (Array.isArray(last)) {
+        last.push(value);
+      } else {
+        result[key] = [last, value];
+      }
+    } else {
+      result[key] = value;
+    }
+    return result;
+  }, {});
+}
+```
+
+## 手写 jsonp
+
+注意：
+
+1. 要严格过滤回调函数名的格式防止 XSS 攻击
+2. CSP 安全限制下无法使用
+
+jsonp 利用了 script 加载外部资源默认能跨域的特性，和后端约定一个回调函数名`RandomCallback`，前端事先定义好回调函数，后端返回字符串`RandomCallback(${JSON.stringify(data))`，待前端加载完毕就会执行这段字符串。
+
+```js
+function jsonp(args) {
+  const { url, callback, params } = args;
+  const script = document.createElement('script');
+  const cbname = `JSONP_NS_${Math.random()
+    .toString()
+    .slice(2)}`;
+  script.src = `${url}?${qs.stringify({ callback: cbname, ...params })}`;
+  window[cbname] = callback;
+  document.body.appendChild(script);
+}
+```
+
+## V8 是如何执行一段 JS 代码的
+
+参考：
+
+[https://zhuanlan.zhihu.com/p/96502646](https://zhuanlan.zhihu.com/p/96502646)
+
+[https://zhuanlan.zhihu.com/p/57898561](https://zhuanlan.zhihu.com/p/57898561)
+
+[https://zhuanlan.zhihu.com/p/111386872](https://zhuanlan.zhihu.com/p/111386872)
+
+## 手写扁平数组函数 flat
+
+```js
+function flat(arr, depth = 1) {
+  return arr.reduce((result, item) => {
+    if (depth > 0 && Array.isArray(item)) {
+      return [...result, ...flat(item, depth - 1)];
+    }
+    return [...result, item];
+  }, []);
+}
+```
+
+## 手写数组去重函数 unique
+
+```js
+function unique(arr) {
+  if (!Array.isArray(arr)) throw new TypeError();
+  return [...new Set(arr)];
+}
+```
+
+## 使页面文本不可复制
+
+css:
+
+```css
+* {
+  user-select: none;
+}
+```
+
+js:
+
+```js
+document.body.onselectstart = e => {
+  e.preventDefault();
+};
+```
+
+## 异步加载脚本 async 与 defer 有何区别
+
+> 详见[https://html.spec.whatwg.org/multipage/scripting.html#the-script-element](https://html.spec.whatwg.org/multipage/scripting.html#the-script-element)
+
+![](../../public/images/asyncdefer.svg)
+
+## typeof 与 instanceof 的区别
+
+- typeof 判断基础数据类型 (null 除外)
+- instanceOf 判断是否处在同条原型链上
+
+<!-- <code src="../../src/components/ToyPromise/index.ts"></code> -->

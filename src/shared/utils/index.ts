@@ -2,6 +2,10 @@ export { default as ToyPromise } from './promise';
 
 export { default as compose } from './compose';
 
+export { default as sleep } from './sleep';
+
+export { default as jsonp } from './jsonp';
+
 export { default as lodash } from './lodash';
 
 export function isFunction(argv: any) {
@@ -72,4 +76,30 @@ export function runGenerator(gen: () => Generator) {
       reject(reason);
     }
   });
+}
+
+export function memorize(fn: Function) {
+  const cache: Record<string, any> = {};
+  return function(...args: any[]) {
+    const key = JSON.stringify(args);
+    return cache[key] || (cache[key] = fn.apply(null, args));
+  };
+}
+
+export function isPlainObject(obj: any): boolean {
+  if (typeof obj !== 'object' || obj === null) return false;
+  let proto = obj;
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto);
+  }
+  return Object.getPrototypeOf(obj) === proto;
+}
+
+export function flat(arr: any[], depth = 1): any[] {
+  return arr.reduce((result, item) => {
+    if (depth > 0 && Array.isArray(item)) {
+      return [...result, ...flat(item, depth - 1)];
+    }
+    return [...result, item];
+  }, []);
 }
