@@ -1,2 +1,2 @@
-export { default as Foo } from './components/Foo';
+export { default as KBModal } from './components/KBModal';
 export * from './shared/utils';

@@ -1,0 +1,52 @@
+.kbmodal-container {
+}
+.fixed-layout {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.kbmodal-mask {
+  .fixed-layout();
+  z-index: 1000;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+.kbmodal {
+  .fixed-layout();
+  overflow: auto;
+  outline: 0;
+  -webkit-overflow-scrolling: touch;
+  pointer-events: none;
+  z-index: 1000;
+  .kbmodal-content {
+    position: relative;
+    top: 100px;
+    width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 5px;
+    pointer-events: auto;
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+      0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    .kbmodal-close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 56px;
+      height: 56px;
+      line-height: 56px;
+      font-size: 16px;
+      text-align: center;
+      color: rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      &:hover {
+        color: rgba(0, 0, 0, 0.75);
+      }
+    }
+    .kbmodal-body {
+      padding: 24px;
+    }
+  }
+}
