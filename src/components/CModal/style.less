@@ -1,4 +1,4 @@
-.kbmodal-container {
+.cmodal-container {
 }
 .fixed-layout {
   position: fixed;
@@ -7,20 +7,20 @@
   bottom: 0;
   left: 0;
 }
-.kbmodal-mask {
+.cmodal-mask {
   .fixed-layout();
   z-index: 1000;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.45);
 }
-.kbmodal {
+.cmodal {
   .fixed-layout();
   overflow: auto;
   outline: 0;
   -webkit-overflow-scrolling: touch;
   pointer-events: none;
   z-index: 1000;
-  .kbmodal-content {
+  .cmodal-content {
     position: relative;
     top: 100px;
     width: 600px;
@@ -30,7 +30,7 @@
     pointer-events: auto;
     box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
       0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-    .kbmodal-close {
+    .cmodal-close {
       position: absolute;
       top: 0;
       right: 0;
@@ -45,7 +45,7 @@
         color: rgba(0, 0, 0, 0.75);
       }
     }
-    .kbmodal-body {
+    .cmodal-body {
       padding: 24px;
     }
   }

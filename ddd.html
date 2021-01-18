@@ -7,18 +7,22 @@
 </head>
 <body>
   <script>
-const promise1 = Promise.resolve('1')
-const promise2 = Promise.resolve('2')
-const promise3 = Promise.reject('3')
-Promise.allSettled([promise1,promise3]).then(values => {
-  console.log(values)
-})
-Promise.all([promise1,promise3]).then(values => {
-  console.log(values)
-})
-Promise.all([promise1,promise2]).then(values => {
-  console.log(values) // 1
-})
+let hide = (close = () => {}) => {
+  return () => {
+    close()
+  }
+}
+let close = hide()
+setTimeout(() => {
+  hide = hide.bind(null, () => console.log(1))
+}, 3000)
+close()
+setTimeout(() => {
+  close = hide()
+  close()
+}, 3000)
+
+
   </script>
 </body>
 </html>

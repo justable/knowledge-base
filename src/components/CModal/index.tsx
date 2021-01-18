@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { CloseOutlined } from '@ant-design/icons';
 import './style.less';
 
-interface KBModalProps extends classAndStyleProps {
+interface CModalProps extends classAndStyleProps {
   visible: boolean;
   onClose?: Function;
   destroyOnClose?: boolean;
@@ -11,12 +11,12 @@ interface KBModalProps extends classAndStyleProps {
   footer?: boolean;
 }
 
-interface KBModalPortalProps extends KBModalProps {
+interface CModalPortalProps extends CModalProps {
   singleton?: boolean;
   root?: string;
 }
 
-const Modal: React.FC<KBModalProps> = props => {
+const Modal: React.FC<CModalProps> = props => {
   const {
     visible,
     children,
@@ -35,23 +35,23 @@ const Modal: React.FC<KBModalProps> = props => {
     return null;
   }
   return (
-    <div className="kbmodal-container" style={{ ...visibleStyle }}>
-      <div className="kbmodal-mask" onClick={handleClose}></div>
-      <div className="kbmodal">
-        <div className="kbmodal-content">
-          <div className="kbmodal-close" onClick={handleClose}>
+    <div className="cmodal-container" style={{ ...visibleStyle }}>
+      <div className="cmodal-mask" onClick={handleClose}></div>
+      <div className="cmodal">
+        <div className="cmodal-content">
+          <div className="cmodal-close" onClick={handleClose}>
             <CloseOutlined />
           </div>
-          {header && <div className="kbmodal-header"></div>}
-          <div className="kbmodal-body">{children}</div>
-          {footer && <div className="kbmodal-footer"></div>}
+          {header && <div className="cmodal-header"></div>}
+          <div className="cmodal-body">{children}</div>
+          {footer && <div className="cmodal-footer"></div>}
         </div>
       </div>
     </div>
   );
 };
-const ModalPortal: React.FC<KBModalPortalProps> = props => {
-  const { singleton = false, root = 'kbmodal-root', ...restProps } = props;
+const ModalPortal: React.FC<CModalPortalProps> = props => {
+  const { singleton = false, root = 'cmodal-root', ...restProps } = props;
   const modalRoot = useMemo(() => {
     let r: HTMLElement | null;
     if (singleton) {

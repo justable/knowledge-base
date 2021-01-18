@@ -593,4 +593,23 @@ document.body.onselectstart = e => {
 - typeof 判断基础数据类型 (null 除外)
 - instanceOf 判断是否处在同条原型链上
 
+## 理解如下闭包代码
+
+```js
+let hide = (close = () => {}) => {
+  return () => {
+    close();
+  };
+};
+let close = hide();
+setTimeout(() => {
+  hide = hide.bind(null, () => console.log(1));
+}, 3000);
+close();
+setTimeout(() => {
+  close = hide();
+  close();
+}, 3000);
+```
+
 <!-- <code src="../../src/components/ToyPromise/index.ts"></code> -->

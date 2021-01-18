@@ -28,7 +28,7 @@ export default defineConfig({
     '/components': [
       {
         title: '数据录入',
-        children: ['components/KBModal/index.md'],
+        children: ['components/CModal/index.md', 'components/Message/index.md'],
       },
       {
         title: '反馈',

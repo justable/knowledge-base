@@ -1,5 +1,5 @@
 ---
-title: Modal
+title: 模态框
 order: 1
 ---
 
@@ -11,18 +11,17 @@ order: 1
  * desc: 最简单的用法。
  */
 import React, { useState } from 'react';
-import { KBModal } from 'knowledge-base';
+import { CModal } from 'knowledge-base';
 import { Button } from 'antd';
 
 export default () => {
   const [visible, setVisible] = useState(false);
-  const [visible2, setVisible2] = useState(false);
   return (
     <div>
       <Button onClick={() => setVisible(true)}>弹窗</Button>
-      <KBModal visible={visible} onClose={() => setVisible(false)}>
+      <CModal visible={visible} onClose={() => setVisible(false)}>
         <input />
-      </KBModal>
+      </CModal>
     </div>
   );
 };
@@ -34,7 +33,7 @@ export default () => {
  * desc: 关闭时销毁 Modal 里的子元素。
  */
 import React, { useState } from 'react';
-import { KBModal } from 'knowledge-base';
+import { CModal } from 'knowledge-base';
 import { Button } from 'antd';
 
 export default () => {
@@ -42,13 +41,13 @@ export default () => {
   return (
     <div>
       <Button onClick={() => setVisible(true)}>弹窗</Button>
-      <KBModal
+      <CModal
         visible={visible}
         destroyOnClose={true}
         onClose={() => setVisible(false)}
       >
         <input />
-      </KBModal>
+      </CModal>
     </div>
   );
 };

@@ -18,7 +18,7 @@ order: 5
 <html>
   <body>
     <div id="root"></div>
-    <div id="kbmodal-root"></div>
+    <div id="cmodal-root"></div>
   </body>
 </html>
 ```
@@ -69,11 +69,11 @@ ref 在我们需要直接与真实 DOM 打交道的场景发挥作用，比如�
 
 > 参考[react-use](https://github.com/streamich/react-use)库。
 
-## 实现 message <Badge>待补充</Badge>
-
-可以使用 React.createPortal，可以考虑做成单例或者每次都销毁。
+## 谈谈 redux <Badge>待补充</Badge>
 
 ## 谈谈 fiber
+
+![](../../public/images/fiber_1.png)
 
 fiber 是一种链表结构，遍历链表可以随时停止和恢复，这比原本的递归更可控。由于 JS 是单线程的，递归复杂的节点树时，由于递归不可被打断，会占用一大段时间导致页面失去响应。fiber 结构使任务分片成为可能，把原本一次递归完的任务分解成多段小任务，合理分配到每个渲染帧中，因此不会长时间的阻塞浏览器渲染。
 
@@ -95,10 +95,127 @@ useEffect(() => {
 }, []);
 ```
 
-## hooks 的原理 <Badge>待补充</Badge>
+## hooks 的原理
 
 闭包+链表存储。
 
-## Router 的实现原理 <Badge>待补充</Badge>
+<code src="../../src/demos/react-hook-impl/index.tsx"></code>
 
-前端路由实现的本质是监听 url 变化，实现方式有两种：Hash 模式和 History 模式，无需刷新页面就能重新加载相应的页面。 Hash url 的格式为 www.a.com/#/，当#后的哈希值发生变化时，通过 hashchange 事件监听，然后页面跳转。 History url 通过 history.pushState 和 history.replaceState 改变 url。
+## Router 的实现原理
+
+> 我们这里的 Router 特指前端路由。
+
+后端路由：路由对应一个资源，路由变更浏览器会向服务器请求相应的页面资源，刷新页面。
+
+前端路由：浏览器只会在初次加载页面时向服务器请求资源，之后的页面切换由运行时文件控制，不会刷新页面。
+
+### 两种实现方式
+
+前端路由的实现方式有两种：Hash 模式和 History 模式。
+
+Hash 模式通过 hashchange 事件监听 url hash 的变更。举例：
+
+```html
+<body>
+  <ul>
+    <li><a href="#/home">home</a></li>
+    <li><a href="#/about">about</a></li>
+  </ul>
+  <div id="routeView"></div>
+</body>
+```
+
+```js
+window.addEventListener('DOMContentLoaded', onLoad);
+window.addEventListener('hashchange', onHashChange);
+let routeView = null;
+function onLoad() {
+  routeView = document.querySelector('#routeView');
+  onHashChange();
+}
+function onHashChange() {
+  switch (window.location.hash) {
+    case '#/home':
+      routeView.innerHTML = 'Home';
+      return;
+    case '#/about':
+      routeView.innerHTML = 'About';
+      return;
+    default:
+      return;
+  }
+}
+```
+
+history 模式通过 popstate 监听 history 的变更，利用 pushState 和 replaceState 发起变更。举例：
+
+```html
+<body>
+  <ul>
+    <li><a href="/home">home</a></li>
+    <li><a href="/about">about</a></li>
+  </ul>
+  <div id="routeView"></div>
+</body>
+```
+
+```js
+window.addEventListener('DOMContentLoaded', onLoad);
+window.addEventListener('popstate', onPopState);
+let routeView = null;
+function onLoad() {
+  routeView = document.querySelector('routeView');
+  let linkList = document.querySelectorAll('a[href]');
+  linkList.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      window.history.pushState(null, '', link.getAttribute('href'));
+      onPopState();
+    });
+  });
+}
+function onPopState() {
+  if (!routeView) {
+    routeView = document.querySelector('#routeView');
+  }
+  switch (window.location.pathname) {
+    case '/home':
+      routeView.innerHTML = 'Home';
+      return;
+    case '/about':
+      routeView.innerHTML = 'About';
+      return;
+    default:
+      return;
+  }
+}
+```
+
+由于 history 模式会改变 url 的 pathname，当在初始页面执行过 pushState 操作后，再人为刷新页面会导致找不到对应的服务器资源，所以需要服务端做相应配置，把某个子域下的请求都返回初始页面。
+
+### React Router 的实现原理
+
+1. 将 Hash 模式和 History 模式封装到了 history 包中，统一使用的接口。
+2. 在顶层组件管理状态，监听事件并对状态作出相应变更，再利用 Context 向下分发数据。
+3. 子组件发起路由变更形成闭环。
+
+![](../../public/images/reactrouter_1.png)
+![](../../public/images/reactrouter_2.png)
+
+## useState 如何实现 setState 的回调函数
+
+> 详见[讨论](https://github.com/facebook/react/issues/14174)。
+
+useState 不支持回调函数，但可以利用 useEffect 实现相同的效果。
+
+```jsx | pure
+function Demo() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    // watch visible的变化作出相应动作，相当于回调函数
+  }, [visible]);
+  return <div>123</div>;
+}
+```
+
+## Context 的原理
