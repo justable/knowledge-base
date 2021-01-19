@@ -68,3 +68,5 @@ p[Math.random() > 0.5 ? 'run' : 'jump']();
 
 1. 只处理函数和顶层的 import/export 变量，不能把没用到的类的方法消除掉
 2. 无法消除副作用代码
+
+## webpack-chain 的工作原理
