@@ -56,3 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 - 时间分片，把耗时的大任务分解成小任务均匀到不同渲染帧中
 - 使用 Web Workers，可以独立于主线程之外运行
 - 使用 requestAnimationFrame 来实现动画的帧动作，因为动画通常比执行代码耗时，requestAnimationFrame 可以保证在每一帧的开始运行，setInterval 函数无法控制执行点，可能在一帧的末尾，导致丢帧
+
+## 怎么做性能分析？ <Badge>待补充</Badge>
+
+> 使用 performance API。

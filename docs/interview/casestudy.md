@@ -23,68 +23,83 @@ title: Case Study
 }
 ```
 
-## 网页 Dark 模式
+## 商城类系统开发
 
-- 方案一：通过 JS 探测，在根节点增加 dark 样式。
+> umi + typescript + antd
+
+重点是用户体验、性能、安全性。
+
+### 路由设计
+
+umi 对 react-router 进行了技术收敛。在嵌套路由的情景中，react-router 需要在子路由组件中定义下一层嵌套路由的结构，也就是 Route 组件嵌套 Route 组件，换句话说，react-router 是需要我们显示组织各路由组件间的关系的，即使把组件关系抽象成 config 配置文件，也需要我们手动遍历 config 得到最终的嵌套结构；在 umi 中，我们只需要关注路由组件自身的业务逻辑而不需要加入任何描述层级关系的代码，路由组件的层级关系全部通过 routes 配置文件管理，比如这样：
 
 ```js
-() => {
-  if (
-    localStorage.theme === 'dark' ||
-    (!('theme' in localStorage) &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches)
-  ) {
-    document.querySelector('html').classList.add('dark');
-  } else {
-    document.querySelector('html').classList.remove('dark');
-  }
+const config = {
+  routes: [
+    {
+      path: '/goodindexes',
+      component: './Goodindexes',
+      routes: [
+        {
+          path: '/goodindexes/list',
+          component: './Goodindexes/List',
+        },
+        {
+          path: '/goodindexes/cart',
+          component: './Goodindexes/Cart',
+        },
+      ],
+    },
+    {
+      path: '/credentials',
+      component: './Credentials',
+      routes: [
+        {
+          path: '/credentials/login',
+          component: './Credentials/Login',
+        },
+        {
+          path: '/credentials/register',
+          component: './Credentials/Register',
+        },
+      ],
+    },
+    {
+      path: '/',
+      redirect: '/goodindexes/entry',
+    },
+    {
+      component: './404',
+    },
+  ],
 };
 ```
 
-- 方案二：准备两套 css，动态切换 link 标签的 url。
-- 方案三：使用 css media 和 css variable。
+子路由组件会自动通过 props.children 传递给父路由组件。
 
-```css
-:root {
-  --color: black;
+嵌套路由存在的问题：可能会导致路由的 url 越来越长，像`/grandfather/father/son/grandson`这样。但是实际业务中，多个页面确实有共同部分需要提升到父路由组件中，我们接着思考一个问题，假如共同部分包含 a,b,c 三个组件，页面 A 和 B 需要显示 a,b,c，页面 C 只需显示 a,b，此时需要再把 a,b 进行路由提取吗？其实除了提升公共部分到父级路由，还可以在父级路由组件中根据当前匹配路由作动态区别处理，这在页面少的情况下更适合。
+
+```js
+import { useLocation } from 'umi';
+const hasGoodMenuRoutes = [
+  '/goodindexes/entry',
+  '/goodindexes/list',
+  '/goodindexes/menu',
+];
+function isShowGoodMenu(pathname: string) {
+  return hasGoodMenuRoutes.includes(pathname);
 }
-p {
-  color: var(--color);
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color: white;
-  }
-}
+const GoodIndexes = props => {
+  const location = useLocation();
+  const hasGoodMenu = isShowGoodMenu(location.pathname);
+  return <div></div>;
+};
 ```
 
-## 权限设计
+路由模式：
 
-> 详见[文章](https://shuwoom.com/?p=3041)。
+hash 模式和 history 模式，history 模式需要服务端作适配处理。
 
-四种模型：
+## OA 系统开发
 
-- ACL：基于用户的直接权限控制
-- RBAC：基于角色的权限控制
-- ABAC：基于属性的权限控制
-- PBAC：基于策略的权限控制
-
-![](../../public/images/authmodel.png)
-
-ABAC 和 PBAC 在互联网场景很少使用。通常使用 RBAC。
-
-## 怎么做性能分析？ <Badge>待补充</Badge>
-
-> 使用 performance API。
-
-## 图片防盗链 <Badge>待补充</Badge>
-
-## React SSR 渲染
-
-对比 renderToString 和 renderToStream
-
-https://github.com/allan2coder/react-ssr
-https://www.cnblogs.com/xunxing/p/39481f7f8b0afea05b78fff25529f005.html
-https://reactjs.org/docs/react-dom-server.html
-https://zhuanlan.zhihu.com/p/47044039
-https://www.fullstackacademy.com/
+重点是权限、复杂表单、流程
