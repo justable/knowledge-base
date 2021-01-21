@@ -125,3 +125,8 @@ const GoodIndexes = props => {
 ## 其他
 
 小程序，h5，运维（docker，linux）
+
+## 前端监控系统
+
+https://juejin.cn/post/6844903662020460552
+https://juejin.cn/post/6844903959115595790
