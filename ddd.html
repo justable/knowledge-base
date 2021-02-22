@@ -4,25 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script src="./index.js"></script>
+  <script>
+    Senea.init({
+      pid: '',
+      uid: '',
+      sid: '',
+      token: '',
+      spa: true,
+      includePaths: [],
+      excludePaths: [],
+      reportUrl: 'http://test/report',
+      openPerf: true,
+      openException: true,
+      openBehavior: true,
+      behaviorActions: ['click'],
+      maxMsgLength: 10,
+      resourceTimeout: 5000
+    })
+  </script>
 </head>
 <body>
+  <img src="https://pics5.baidu.com/feed/8d5494eef01f3a298da71e0b9cc54f365e607cf4.jpeg?token=bfe486e328992b69836f4b68430bb39e&s=91B87593562F5AAC606DA9F30300C0A2" alt="">
+  <img src="https://user-images.githubusercontent.com/9554297/83762004-a0761b00-a6a9-11ea-83b4-9c8ff721d4b8.png" alt="">
+  <button id="pushstate">pushState</button>
   <script>
-let hide = (close = () => {}) => {
-  return () => {
-    close()
-  }
-}
-let close = hide()
-setTimeout(() => {
-  hide = hide.bind(null, () => console.log(1))
-}, 3000)
-close()
-setTimeout(() => {
-  close = hide()
-  close()
-}, 3000)
-
-
+    document.getElementById('pushstate').addEventListener('click', () => {
+      const url = new URL(window.location);
+      url.searchParams.set('foo', 'bar');
+      window.history.pushState({}, '', url);
+    })
   </script>
 </body>
 </html>

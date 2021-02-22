@@ -229,3 +229,12 @@ https://www.cnblogs.com/xunxing/p/39481f7f8b0afea05b78fff25529f005.html
 https://reactjs.org/docs/react-dom-server.html
 https://zhuanlan.zhihu.com/p/47044039
 https://www.fullstackacademy.com/
+
+## React.memo 为什么不是默认行为
+
+> 见[更多讨论](https://stackoverflow.com/questions/53074551/when-should-you-not-use-react-memo/63405621?r=SearchResults#63405621)。
+
+为什么不创造一个 React.always 来保证每次都重渲染并把 React.memo 作为默认行为呢？
+
+1. 额外的对比开销，意味着每个组件都要进行一次浅对比，这会随着 props 数量的增加逐渐消耗更多性能，尽管我们可以自定义对比逻辑进行优化。
+2. 多层嵌套的对象，只修改了内嵌对象，这不会触发重渲染，但这本身就违反了 React 的 immutable 原则，可能考虑更多的是向前兼容性吧。

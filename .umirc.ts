@@ -21,14 +21,19 @@ export default defineConfig({
   base: '/knowledge-base',
   publicPath: '/knowledge-base/',
   exportStatic: {},
-  links: [
+  styles: [
+    'global.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
   ],
   menus: {
     '/components': [
       {
         title: '数据录入',
-        children: ['components/CModal/index.md', 'components/Message/index.md'],
+        children: [
+          'components/Modal/index.md',
+          'components/Message/index.md',
+          'components/TextEllipsis/index.md',
+        ],
       },
       {
         title: '反馈',

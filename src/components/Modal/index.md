@@ -11,7 +11,7 @@ order: 1
  * desc: 最简单的用法。
  */
 import React, { useState } from 'react';
-import { CModal } from 'knowledge-base';
+import { Modal } from 'knowledge-base';
 import { Button } from 'antd';
 
 export default () => {
@@ -19,9 +19,9 @@ export default () => {
   return (
     <div>
       <Button onClick={() => setVisible(true)}>弹窗</Button>
-      <CModal visible={visible} onClose={() => setVisible(false)}>
+      <Modal visible={visible} onClose={() => setVisible(false)}>
         <input />
-      </CModal>
+      </Modal>
     </div>
   );
 };
@@ -33,7 +33,7 @@ export default () => {
  * desc: 关闭时销毁 Modal 里的子元素。
  */
 import React, { useState } from 'react';
-import { CModal } from 'knowledge-base';
+import { Modal } from 'knowledge-base';
 import { Button } from 'antd';
 
 export default () => {
@@ -41,13 +41,13 @@ export default () => {
   return (
     <div>
       <Button onClick={() => setVisible(true)}>弹窗</Button>
-      <CModal
+      <Modal
         visible={visible}
         destroyOnClose={true}
         onClose={() => setVisible(false)}
       >
         <input />
-      </CModal>
+      </Modal>
     </div>
   );
 };

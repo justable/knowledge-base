@@ -612,4 +612,20 @@ setTimeout(() => {
 }, 3000);
 ```
 
+## target.onerror 和 target.addEventListener('error')什么区别
+
+前者是在 target 上注册了方法，当 target 发生 error 就会调用该方法，默认为 null。后者是在 target 上注册监听事件，先于 onerror 执行。
+
+注意：当要捕获网页的所有异常时，要使用`window.addEventListener('error', callback, true)`，因为 img/script 等网络请求异常不会冒泡，所有不会执行`window.onerror`，且要在捕获阶段监听。
+
+## 自定义事件 CustomEvent
+
+```js
+const ce = new CustomEvent('spaunload', {
+  detail: {},
+});
+window.dispatchEvent(ce);
+window.addEventListener('spaunload', () => {});
+```
+
 <!-- <code src="../../src/components/ToyPromise/index.ts"></code> -->
