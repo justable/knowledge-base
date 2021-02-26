@@ -461,7 +461,9 @@ export default () => {
 
 基于 umi-request 和 ahooks 的 useRequest 提供了一套统一的网络请求和错误处理方案。
 
-### 接口格式规范
+### 错误处理方案
+
+后台遵守 RESTful 的前提下，把错误消息体的格式定义成如下格式：
 
 ```ts
 export enum ErrorShowType {
@@ -476,11 +478,13 @@ interface ErrorInfoStructure {
   data?: any; // response data
   errorCode?: string; // code for errorType
   errorMessage?: string; // message display to user
-  showType?: number; // error display type： 0 silent; 1 message.warn; 2 message.error; 4 notification; 9 page
+  showType?: ErrorShowType; // error display type： 0 silent; 1 message.warn; 2 message.error; 4 notification; 9 page
   traceId?: string; // Convenient for back-end Troubleshooting: unique request ID
   host?: string; // onvenient for backend Troubleshooting: host of current access server
 }
 ```
+
+`@umijs/plugin-request`会自动拦截非 200 接口，把错误信息根据 showType 统一处理，我们无需再为 axios 配置任何的拦截器。如果后台返回的错误信息不符合如上格式，可以通过 errorConfig.adaptor 进行配置，下面的运行时配置会有介绍。
 
 ### 构建时配置
 
@@ -500,6 +504,7 @@ import { RequestConfig } from 'umi';
 export const request: RequestConfig = {
   timeout: 1000,
   errorConfig: {
+    // umi会根据这里返回的数据决定如何处理错误信息，比如message.warn,message.error等
     adaptor: resData => {
       return {
         ...resData,
@@ -561,13 +566,36 @@ export const request: RequestConfig = {
 };
 ```
 
+除了 errorConfig 和 middlewares 以外其它配置都是直接透传 umi-request 的全局配置，所以想知道都支持哪些配置可以直接参考 umi-request 的全局配置。
+
 ### 代码案例
 
+> 从个人实践来看，接口状态码放在 response header 上，错误的 errorMessage 优先后台定义，前端来做弥补措施。可以参考[mall-front-template](https://github.com/justable/mall-front-template)的相关配置。
+
 ```ts
+// mock
+export default {
+  'GET /api/currentUser': (req: Request, res: Response) => {
+    res.status(401).send({
+      data: {
+        isLogin: false,
+      },
+      errorCode: '401',
+      errorMessage: '请先登录！',
+      success: true,
+      showType: 2,
+    });
+    return;
+  },
+};
+```
+
+```tsx
+// component
 import { useRequest } from 'umi';
 export default () => {
   const { data, error, loading } = useRequest(() => {
-    return services.getUserList('/api/test');
+    return services.getCurrentUser();
   });
   if (loading) {
     return <div>loading...</div>;
