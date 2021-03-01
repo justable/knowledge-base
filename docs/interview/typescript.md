@@ -69,3 +69,39 @@ let sum2: (x: number, y: number) => void = function(x, y) {
 ```
 
 没有对匿名函数进行类型约束，当匿名函数赋值给 sum2 变量时进行类型推导此函数的返回类型是 number。同时对 sum2 变量进行类型约束，sum2 函数的结果是 void 不应该再被使用。
+
+## 在函数式组件中如何使得参数支持泛型传入
+
+> https://stackoverflow.com/questions/53958028/how-to-use-generics-in-props-in-react-in-a-functional-component
+
+这在 class 组件中很简单就能实现：
+
+```tsx
+interface GoodListProps<T> {
+  dataSource: T[];
+}
+class GoodList<T> extends React.Component<GoodListProps<T>> {}
+```
+
+但如何在函数式组件中实现呢？这要求我们不能使用 React 内置的 FC 类型，像下面这样是不行的：
+
+```tsx
+interface GoodListProps<T> {
+  dataSource: T[];
+}
+const GoodList: React.FC<GoodListProps<T>> = props => {};
+```
+
+应该这样：
+
+```tsx
+interface GoodListProps<T> {
+  dataSource: T[];
+}
+const GoodList = <T extends object>(
+  props: React.PropsWithChildren<GoodListProps<T>>,
+) => {};
+
+// 这样使用即可
+<GoodList<{ id: string }> dataSource={[]} />;
+```
