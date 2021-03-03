@@ -1,4 +1,4 @@
-# json web token
+# json web token(JWT)
 
 > [原文](http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html)
 

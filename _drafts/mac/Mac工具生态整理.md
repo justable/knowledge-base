@@ -16,6 +16,8 @@
 
 ## 数据库相关
 
+# Mac 工具生态整理
+
 - Navicat
 
 Navicat Premium 15.0.14 版本之后无法用这激活方法。激活过程https://www.52pojie.cn/thread-1101529-1-1.html。

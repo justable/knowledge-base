@@ -1,1 +1,3 @@
-![](../../public/images/whatisjs.png)
+# readme
+
+![](@images/whatisjs.png)

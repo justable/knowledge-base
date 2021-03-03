@@ -1,3 +1,5 @@
+# node 环境整理
+
 ## brew
 
 详细命令可以执行`man brew`查看，在 mac 中可以使用这种格式的命令`$(brew --cache)$(brew --prefix)`，替换镜像源参考[这里](https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/)。

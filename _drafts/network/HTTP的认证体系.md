@@ -8,7 +8,8 @@ HTTP authentication framework 为 client 和 server 的交流提供安全保障�
 
 这一认证过程如下图所示：
 
-![image.png](../../public/images/1606287893550-9204d4bb-62b7-4184-b549-68b6406d838a.png)
+![image.png](@images/1606287893550-9204d4bb-62b7-4184-b549-68b6406d838a.png)
+
 在上图，server 的第一次 response 中 WWW-Authenticate: <type> realm=<realm>，告诉 client 如何提供 credentials，Basic 是 Authentication schemes 中的一种；client 按指示回应对应的信息 Authorization: <type> <credentials>。
 
 ## Authentication schemes

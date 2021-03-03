@@ -4,11 +4,11 @@
 
 ### 第一次请求
 
-![](../../public/images/1604367465823-3e5cc783-17af-47c3-bff4-a00fc75b10e0.png)
+![](@images/1604367465823-3e5cc783-17af-47c3-bff4-a00fc75b10e0.png)
 
 ### 后续请求
 
-![](../../public/images/1604367465845-3eb6f8d7-1d7c-4e09-b51d-30617785614d.png)
+![](@images/1604367465845-3eb6f8d7-1d7c-4e09-b51d-30617785614d.png)
 
 ## 强缓存头部字段
 
@@ -21,7 +21,6 @@ Expires 是 Web 服务器响应消息头字段，在响应 http 请求时告诉�
 Cache-Control 与 Expires 的作用一致，都是指明当前资源的**有效期**，控制浏览器是否直接从浏览器缓存取数据还是重新发请求到服务器取数据。只不过 Cache-Control 的选择更多，设置更细致，**如果同时设置的话，其优先级高于 Expires。**
 
 Cache-Control 的值可以是 public、private、no-cache、no- store、no-transform、must-revalidate、proxy-revalidate、max-age，各个消息中的指令含义如下：
-\*\*
 
 1. **Public**指示响应可被任何缓存区缓存。
 1. **Private**指示对于单个用户的整个或部分响应消息，不能被共享缓存处理。这允许服务器仅仅描述当用户的部分响应消息，此响应消息对于其他用户的请求无效。
@@ -54,7 +53,8 @@ Last-Modified/If-Modified-Since 要配合 Cache-Control 使用。
 
 - Etag：服务器响应时，告诉浏览器当前资源在服务器的唯一标识（生成规则由服务器决定）。Apache 中，ETag 的值，默认是对文件的索引节（INode），大小（Size）和最后修改时间（MTime）进行 Hash 后得到的。
 - If-None-Match：当资源过期时，浏览器发现响应头里有 Etag,则再次像服务器请求时带上请求头`if-none-match`(值是 Etag 的值)。服务器收到请求进行比对，决定返回 200 或 304
-  > ##### 为什么既有 Last-Modified 还有 Etag(两者为什么并存，有什么好处)
+
+> 为什么既有 Last-Modified 还有 Etag(两者为什么并存，有什么好处)
 
 你可能会觉得使用 Last-Modified 已经足以让浏览器知道本地的缓存副本是否足够新，为什么还需要 Etag 呢？HTTP1.1 中 Etag 的出现主要是为了解决几个 Last-Modified 比较难解决的问题：
 
@@ -65,7 +65,7 @@ Last-Modified/If-Modified-Since 要配合 Cache-Control 使用。
 这时，利用 Etag 能够更加准确的控制缓存，因为 Etag 是服务器自动生成或者由开发者生成的对应资源在服务器端的唯一标识符。
 Last-Modified 与 ETag 是可以一起使用的，**服务器会优先验证 ETag**，一致的情况下，才会继续比对 Last-Modified，最后才决定是否返回 304。
 
-**ETag 出现的历史原因是 Last-Modified 只做到了 “秒级别”的验证，无法辨识毫秒，微妙级别的校验，因此才出现了 ETag。\*\***ETag 的出现，意味着客户端需要需求的升级，因此 If-None-Match，If-Match,If-Range 随之用来验证文件变化。\*\*
+**ETag 出现的历史原因是 Last-Modified 只做到了 “秒级别”的验证，无法辨识毫秒，微妙级别的校验，因此才出现了 ETag。**ETag 的出现，意味着客户端需要需求的升级，因此 If-None-Match，If-Match,If-Range 随之用来验证文件变化。
 
 ### 注解
 
@@ -77,7 +77,7 @@ ETag:"be15b26c29bce1:0" #可选，这里为了准确确认资源是否变化
 ```
 
 举例：
-![](../../public/images/1604367696121-d5d0046b-87d9-4da3-ab04-51392516e6f0.png)
+![](@images/1604367696121-d5d0046b-87d9-4da3-ab04-51392516e6f0.png)
 客户端第二次请求此 URL 时，根据 HTTP 协议的规定，浏览器会向服务器传送 If-Modified-Since 和 If-None-Match(可选报头，值 Etag 的值) 报头，询问该时间之后文件是否有被修改过：
 
 ```
@@ -86,15 +86,15 @@ If-None-Match:"be15b26c29bce1:0" #可选，这里为了准确确认资源是否�
 ```
 
 举例：
-![](../../public/images/1604367696002-e806f7f4-6e31-4b2f-a78f-148a1569c793.png)
-如果服务器端的资源没有变化，则自动返回 HTTP 304 （Not Changed.）状态码，内容为空，否则重新发起请求，请求下载资源这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。\*\*
+![](@images/1604367696002-e806f7f4-6e31-4b2f-a78f-148a1569c793.png)
+如果服务器端的资源没有变化，则自动返回 HTTP 304 （Not Changed.）状态码，内容为空，否则重新发起请求，请求下载资源这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。
 
 ## 如何实现 200(from cache)
 
 Status 200 Ok (from cache)出现的条件是 Cache-Control 或者 Expires 满足一定的条件。
 
 **注意：缓存控制是服务器进行报头建议，以下报头是响应头，不是请求头。**
-\*\*
+
 以下 2 种方案只要实现一种即可实现资源 from cache：
 
 - 使用 Cache-Control
@@ -109,7 +109,7 @@ Cache-Control：public,Max-Age=84800
 ETag:"f6c01531e9c65fa96f3d40409fd030f1"
 ```
 
-![](../../public/images/1604368262380-c7a1bff1-e773-475c-97c0-d617ae3173ca.png)
+![](@images/1604368262380-c7a1bff1-e773-475c-97c0-d617ae3173ca.png)
 
 - Expires 不能过期
 
@@ -117,10 +117,10 @@ ETag:"f6c01531e9c65fa96f3d40409fd030f1"
 Expires：Sun, 31 Jul 2016 00:19:47 GMT
 ```
 
-![](../../public/images/1604368262317-62ea6bfb-5a36-4e97-9fd2-6fd9890b0d4a.png)
+![](@images/1604368262317-62ea6bfb-5a36-4e97-9fd2-6fd9890b0d4a.png)
 
 **对于浏览器而言，还有一种数据是 DataURL 协议的数据，这种数据也会从缓存读取，实现 from cache ,但是，如果将所有数据转码成 DataURL,会出现性能问题。**
-![](../../public/images/1604368262434-81b2df56-a122-48cf-967a-342d8ad93236.png)
+![](@images/1604368262434-81b2df56-a122-48cf-967a-342d8ad93236.png)
 
 ## 缓存使用技巧
 
