@@ -10,4 +10,4 @@ localhost 是个域名，默认指向 127.0.0.1，被定义在 hosts 文件中�
 
 ## 什么是 0.0.0.0
 
-0.0.0.0 并不是一个真实的 IP 地址，它代表 unspecified（未指定），如果服务器监听了 0.0.0.0 相当于监听了所有，请见下图：![localhost.png](https://cdn.nlark.com/yuque/0/2020/png/467908/1598321834410-9b8e3132-8155-450c-8336-ff32bbe58b20.png#align=left&display=inline&height=840&margin=%5Bobject%20Object%5D&name=localhost.png&originHeight=840&originWidth=1646&size=309103&status=done&style=none&width=1646)
+0.0.0.0 并不是一个真实的 IP 地址，它代表 unspecified（未指定），如果服务器监听了 0.0.0.0 相当于监听了所有，请见下图：![localhost.png](../../public/images/1598321834410-9b8e3132-8155-450c-8336-ff32bbe58b20.png)

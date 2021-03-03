@@ -14,7 +14,7 @@ CDN 其实是建立在真实网络之上，由分布在不同区域的边缘节�
 
 ## 具体架构
 
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/467908/1609227021543-4fb26ab1-118c-4ed4-98ad-1f65dc0511fc.png#align=left&display=inline&height=439&margin=%5Bobject%20Object%5D&name=image.png&originHeight=548&originWidth=893&size=256035&status=done&style=none&width=715)
+![image.png](../../public/images/1609227021543-4fb26ab1-118c-4ed4-98ad-1f65dc0511fc.png)
 
 ### 特点
 
