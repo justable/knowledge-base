@@ -1,3 +1,0 @@
-# readme
-
-![](@images/whatisjs.png)
