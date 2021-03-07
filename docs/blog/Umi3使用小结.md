@@ -70,7 +70,7 @@ export const routes = [
 
 我们也能直接在代码中获取权限信息，
 
-```ts
+```tsx
 import React from 'react';
 import { useAccess, Access } from 'umi';
 const PageA = props => {
@@ -148,6 +148,7 @@ import { createLogger } from 'redux-logger';
 import { message } from 'antd';
 export const dva = {
   config: {
+    // 每次dispatch都会打出日志
     onAction: createLogger(),
     onError(e: Error) {
       message.error(e.message, 3);
@@ -608,6 +609,139 @@ export default () => {
   return <div>{data.name}</div>;
 };
 ```
+
+## 使用多页面和构建预渲染
+
+配置如下：
+
+```ts
+export default {
+  exportStatic: {},
+};
+```
+
+如果想要 SEO 优化，可以配置：
+
+> 只有在多页面场景才会开启构建时预渲染，即同时设置 exportStatic 和 ssr。
+
+```ts
+export default {
+  exportStatic: {},
+  ssr: {},
+};
+```
+
+这样 umi 会为每个页面在构建时预渲染（不同于服务端渲染）。
+
+## 服务端渲染
+
+> [详细介绍](https://umijs.org/zh-CN/docs/ssr)
+
+配置如下：
+
+```ts
+export default {
+  ssr: {
+    // devServerRender为true，设置false后本地运行时不会执行服务端渲染逻辑，但build时仍会生产umi.server.js
+    devServerRender: false,
+  },
+};
+```
+
+此时会生成 umi.server.js，然后在服务端使用它：
+
+```js
+// Express
+app.use(async (req, res) => {
+  // 或者从 CDN 上下载到 server 端
+  // const serverPath = await downloadServerBundle('http://cdn.com/bar/umi.server.js');
+  const render = require('./dist/umi.server');
+  res.setHeader('Content-Type', 'text/html');
+
+  const context = {};
+  const { html, error, rootContainer } = await render({
+    // 有需要可带上 query
+    path: req.url,
+    context,
+
+    // 可自定义 html 模板
+    // htmlTemplate: defaultHtml,
+
+    // 启用流式渲染
+    // mode: 'stream',
+
+    // html 片段静态标记（适用于静态站点生成）
+    // staticMarkup: false,
+
+    // 扩展 getInitialProps 在服务端渲染中的参数
+    // getInitialPropsCtx: {},
+
+    // manifest，正常情况下不需要
+  });
+
+  // support stream content
+  if (content instanceof Stream) {
+    html.pipe(res);
+    html.on('end', function() {
+      res.end();
+    });
+  } else {
+    res.send(res);
+  }
+});
+```
+
+## 按需加载资源
+
+umi 默认不会开启按需加载，build 后的目录是这样的：
+
+```
++ dist
+  - umi.js
+  - umi.css
+  - index.html
+```
+
+如果想要开启，umi 主要有两种按需加载资源策略：
+
+1. 按路由
+
+> 已知问题：global.css 会先于 antd.css 加载导致无法覆盖 antd 样式。
+
+如下配置：
+
+```js
+export default {
+  dynamicImport: {
+    loading: '@/Loading',
+  },
+};
+```
+
+umi 会按照 SPA 的路由分离资源，即触发了对应的路由才会异步加载该路由的资源（js/css 等）。目录会变成这样：
+
+```
++ dist
+  - umi.js
+  - umi.css
+  - index.html
+  - p__index.js
+  - p__users__index.js
+```
+
+我们可以设置`src/Loading.tsx`作为加载时动画。
+
+2. 按`import()`语法
+
+如下配置：
+
+```js
+export default {
+  dynamicImportSyntax: {},
+};
+```
+
+只会对`import()`语法做 code spliting。
 
 ## 生态周边
 
