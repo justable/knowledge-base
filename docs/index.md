@@ -1,9 +1,9 @@
 ---
 hero:
-  title: knowledge-base
-  desc: knowledge-base site example
+  title: 知识库
+  desc: 好奇心驱动
   actions:
-    - text: Getting Started
+    - text: 开始探索
       link: /blog
 features:
   - icon: https://gw.alipayobjects.com/zos/bmw-prod/881dc458-f20b-407b-947a-95104b5ec82b/k79dm8ih_w144_h144.png
@@ -19,5 +19,3 @@ footer: Open-source MIT Licensed | Copyright © 2020<br />Powered by [dumi](http
 ---
 
 ## Hello knowledge-base!
-
-<!-- 面试题汇总https://juejin.cn/post/6895752757534261256 -->
