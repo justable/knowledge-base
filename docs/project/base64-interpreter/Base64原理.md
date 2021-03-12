@@ -4,7 +4,7 @@
 
 Base64 取自 ASCII 码的其中 64 个字符，如下图所示：
 
-![](@images/Base64.png)
+![](@images/base64.png)
 
 ## Base64 的由来
 
