@@ -19,3 +19,7 @@
 .umi-production
 .umi-test
 .env.local
+
+/_drafts
+
+IMPORTANT_SECRETS.md

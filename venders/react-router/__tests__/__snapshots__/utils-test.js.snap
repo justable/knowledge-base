@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils createRoutesFromChildren 把ReactElement转换成树状结构 1`] = `
+Array [
+  Object {
+    "caseSensitive": false,
+    "element": <Route
+      element={<Admin />}
+      path="/admin"
+    />,
+    "path": "/admin",
+  },
+  Object {
+    "caseSensitive": false,
+    "element": <Route
+      element={<Manage />}
+      path="/manage"
+    />,
+    "path": "/manage",
+  },
+]
+`;

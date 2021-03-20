@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { isFunction, isThenable } from '../../shared/utils';
+import { isFunction, isThenable } from './helper';
 
 const PENDING = Symbol.for('pending');
 const FULFILLED = Symbol.for('fulfilled');

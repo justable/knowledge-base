@@ -1,4 +1,4 @@
-import { isString, isObject } from '.';
+import { isString, isObject } from './helper';
 
 function _get(obj: any, exps: string) {
   if (!isString(exps) || !isObject(obj)) return obj;

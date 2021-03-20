@@ -17,6 +17,7 @@ const nav = [
       { title: 'Rollup', path: '/rollup' },
       { title: 'Browser', path: '/browser' },
       { title: 'Babel', path: '/babel' },
+      { title: '微信', path: '/weixin' },
     ],
   },
   {
@@ -25,6 +26,7 @@ const nav = [
     children: [
       { title: 'Nodejs', path: '/nodejs' },
       { title: 'Java', path: '/java' },
+      { title: '数据库', path: '/db' },
     ],
   },
   {
@@ -34,6 +36,8 @@ const nav = [
       { title: '计算机网络', path: '/network' },
       { title: '计算机原理', path: '/computer' },
       { title: 'Linux', path: '/linux' },
+      { title: '算法', path: '/algorithm' },
+      { title: 'Docker', path: '/docker' },
     ],
   },
   {

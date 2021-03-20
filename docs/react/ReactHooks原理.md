@@ -198,3 +198,4 @@ hooks 的重渲机制和以前并没有区别，在顶层使用 hooks 的 setXXX
 [https://stackoverflow.com/questions/48563650/does-react-keep-the-order-for-state-updates/48610973#48610973](https://stackoverflow.com/questions/48563650/does-react-keep-the-order-for-state-updates/48610973#48610973)
 [https://github.com/facebook/react/issues/11527#issuecomment-360199710](https://github.com/facebook/react/issues/11527#issuecomment-360199710)
 [https://medium.com/the-guild/under-the-hood-of-reacts-hooks-system-eb59638c9dba](https://medium.com/the-guild/under-the-hood-of-reacts-hooks-system-eb59638c9dba)
+[https://juejin.im/post/5e53d9116fb9a07c9070da44](https://juejin.im/post/5e53d9116fb9a07c9070da44)

@@ -1,0 +1,46 @@
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    // https://cdn.jsdelivr.net/gh/vinorodrigues/bootstrap-dark@0.0/dist/bootstrap-night.css
+    --blue: #375a7f;
+    --indigo: #6610f2;
+    --purple: #654ea3;
+    --pink: #e83e8c;
+    --red: #e74c3c;
+    --orange: #fd7e14;
+    --yellow: #f39c12;
+    --green: #00bc8c;
+    --teal: #45b5aa;
+    --cyan: #17a2b8;
+    --white: #fafafa;
+    --gray: #626262;
+    --gray-light: #ccc;
+    --gray-dark: #3b3b3b;
+    --primary: #375a7f;
+    --secondary: #626262;
+    --success: #00bc8c;
+    --info: #17a2b8;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --light: #7e7e7e;
+    --dark: #3b3b3b;
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+      'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+      'Liberation Mono', 'Courier New', monospace;
+  }
+  // https://github.com/vinorodrigues/bootstrap-dark
+  img:not([src*='.svg']) {
+    filter: brightness(0.8) contrast(1.2);
+    transition: all 0.5s ease-in-out;
+    &:hover {
+      filter: none;
+    }
+  }
+}

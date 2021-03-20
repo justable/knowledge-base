@@ -5,3 +5,7 @@ interface classAndStyleProps {
   className?: string;
   style?: React.CSSProperties;
 }
+
+interface NoArgFn<T> {
+  (): T;
+}

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReactElement createElement 快照element的数据结构 1`] = `
+<div
+  className="container"
+>
+  hello world
+</div>
+`;
