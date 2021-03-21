@@ -91,9 +91,9 @@
 
 5. 安装 Tomcat 扩展包`Tomcat for Java`。
 
-6. 安装 Tomcat，我安装在了`/Users/zhuzy/java/apache-tomcat-9.0.41`。
+6. 安装 Tomcat，我安装在了`/Users/zhuzy/java/apache-tomcat-9.0.41`。Spring Boot 内置 Tomcat，其实不需要自己下载 Tomcat。
 
-7. 安装扩展包`Spring Boot Extension Pack`，主要方便 Spring Boot 开发。Spring Boot 内置 Tomcat，其实不需要自己下载 Tomcat。
+7. 安装扩展包`Spring Boot Extension Pack`，主要方便 Spring Boot 开发。
 
 > 我们可以通过`⇧⌘P`组合键然后输入`java`查看相关命令。
 

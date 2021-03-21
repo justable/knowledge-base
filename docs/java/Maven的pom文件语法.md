@@ -15,7 +15,11 @@
 
 - repositories 标签
 
+> [阿里远程仓库](https://maven.aliyun.com/mvn/guide)
+
 配置 remote repository。maven 优先在 local repository 查找目标包，如果没找到就会去 remote repository 找，并缓存到 local repository。
+
+比如下面配置会把 grails-core 相关的包的远程仓库改为阿里仓库。
 
 ```xml
 <repositories>
