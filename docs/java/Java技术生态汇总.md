@@ -71,6 +71,7 @@
 - Spring Boot Actuator
 - logback/log4j2
 - Kafka
+- Arthas
 
 ## Observability
 

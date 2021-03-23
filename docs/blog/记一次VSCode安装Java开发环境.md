@@ -95,6 +95,8 @@
 
 7. 安装扩展包`Spring Boot Extension Pack`，主要方便 Spring Boot 开发。
 
+8. 按照 Lombok 扩展包，否则无法生产 getter/setter 方法。
+
 > 我们可以通过`⇧⌘P`组合键然后输入`java`查看相关命令。
 
 ## 快速创建项目骨架
