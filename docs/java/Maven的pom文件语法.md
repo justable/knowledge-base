@@ -4,6 +4,10 @@
 
 dependencyManagement 只是对依赖包的申明，不会被打包进去。在多模块项目中，dependencyManagement 通常定义在父模块，子模块定义的 dependencies 如果缺省某项属性，就会继承 dependencyManagement 中的属性，比如版本号，这样就可以在父模块中统一管理。
 
+- plugins 标签
+
+plugins 和 dependences 不同，不会被打包进去。
+
 - parent 标签
 
 多个项目常常会有共同的依赖，把这些公共依赖提取到 parent 项目中管理，然后在多个项目中通过 parent 标签依赖 parent 项目。比如：
@@ -93,3 +97,5 @@ dependencyManagement 只是对依赖包的申明，不会被打包进去。在�
 ```
 
 `<mirrorOf>*</mirrorOf>`放在前面会导致后面的失效。
+
+这里必须要提醒！mrrior 标签配置多个，生效的只有第一个！只有第一个仓库无法访问的时候，才会使用第二个。注意是无法访问的时候，如果能访问，但是仓库中没有你要找的包，他不会去访问第二个仓库！
