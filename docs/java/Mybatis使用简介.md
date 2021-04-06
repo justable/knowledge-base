@@ -20,5 +20,44 @@
 
 ## 自动生成实体对象
 
-使用 mybatis-plus-generator，
-sys_ba,sys_ba_owner,sys_ban,sys_ban_owner,sys_comment,sys_dict_data,sys_dict_type,sys_follow,sys_login_info,sys_role,sys_user,sys_user_online,sys_user_role
+使用 mybatis-plus-generator。
+
+## @param
+
+用于在 DAO 层为字段重命名，
+
+```java
+public BigDecimal delete(@Param("id") BigInteger userId);
+```
+
+也可以为对象重命名，
+
+```java
+public List<BaDO> list(@Param("baDO") BaDO baDO);
+```
+
+此时在 xml 中得使用对象引用，不使用@param 时默认也可以使用`_parameter.id` 来访问。
+
+```xml
+<select id="list" resultType="com.tingyu.tieba.ba.dataobject.BaDO" parameterType="com.tingyu.tieba.ba.dataobject.BaDO">
+    <include refid="COMMON_SELECT"/>
+    WHERE
+    <if test="baDO.id != null">
+        id = #{baDO.id} and
+    </if>
+    <if test="baDO.parentId != null">
+        parent_id = #{baDO.parentId} and
+    </if>
+    <if test="baDO.baName != null">
+        ba_name like '#{baDO.baName}%' and
+    </if>
+    <if test="baDO.level != null">
+        level = #{baDO.level} and
+    </if>
+    IS_DELETED = 'n'
+</select>
+```
+
+## parameterType
+
+用于指定对应的 mapper 接口接受的参数类型

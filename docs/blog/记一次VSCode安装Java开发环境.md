@@ -98,8 +98,19 @@
 8. 按照 Lombok 扩展包，否则无法生产 getter/setter 方法。
 
 > 我们可以通过`⇧⌘P`组合键然后输入`java`查看相关命令。
-> CTRL+SHIFT+O 自动引入依赖包 或 CTRL+. 自动解决问题
+> CTRL+SHIFT+O 或 CTRL+SHIFT+V 自动引入依赖包 或 CTRL+. 自动解决问题
+
+以上插件会在 VSCode 的左边新增多个操作区域，请使用 Java Projects 区域管理 Maven，在 Spring Boot Dashboard 会有问题。
 
 ## 快速创建项目骨架
 
 ![](@images/vscode_create_javaproject.png)
+
+## 格式化 java 代码
+
+```json
+{
+  "java.format.settings.url": "eclipse-formatter.xml",
+  "editor.defaultFormatter": "redhat.java"
+}
+```
