@@ -1,4 +1,4 @@
-# 记一次 VSCode 安装 Java 开发环境
+# 在 VSCode 安装 Java 开发环境
 
 > 以 Mac OS 为例
 
@@ -54,7 +54,9 @@
   "java.format.onType.enabled": true,
   "java.format.comments.enabled": true,
   "java.completion.enabled": true,
-  "java.completion.guessMethodArguments": true
+  "java.completion.guessMethodArguments": true,
+  // 支持同时运行多个java
+  "java.debug.settings.console": "externalTerminal"
 }
 ```
 
@@ -106,11 +108,24 @@
 
 ![](@images/vscode_create_javaproject.png)
 
+多模块项目：依次生成多个子项目即可，CTRL+SHIFT+P -> java: create project -> maven
+
 ## 格式化 java 代码
 
 ```json
 {
   "java.format.settings.url": "eclipse-formatter.xml",
   "editor.defaultFormatter": "redhat.java"
+}
+```
+
+## 自动 import 依赖包
+
+> Alt+Shift+o
+
+```json
+{
+  "java.actionsOnPaste.organizeImports": true,
+  "java.saveActions.organizeImports": true
 }
 ```

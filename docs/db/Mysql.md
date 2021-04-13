@@ -84,3 +84,7 @@ Navicat 版本过久，mysql8 之前的版本中加密规则是 mysql_native_pas
 
 1. 升级 Navicat，但是 Navicat 是收费的，破解麻烦。
 2. 把用户密码登录的加密规则还原成 mysql_native_password 这种加密方式，具体操作参考[这里](https://blog.csdn.net/yubin1285570923/article/details/83352491)。
+
+### Specified key was too long; max key length is 767 bytes
+
+在 mysql5.6 版本以下，索引键前缀限制默认为 767byte，且当数据库的字符集为 utf8mb4 时，utf8mb4 规定 4byte 表示一个字符，那么 `varchar(255)=1020>767`，因此报错。当数据库的字符集为 utf8 时，utf8 规定 3byte 表示一个字符，那么 `varchar(255)=765<767`，不会报错。我们可以开启 innodb_large_prefix，这样索引键前缀限制就会变为 3072byte。

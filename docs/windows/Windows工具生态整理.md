@@ -24,3 +24,48 @@ Navicat Premium 15.0.14 版本之后无法用这激活方法。激活过程https
 - Power Designer
 
 https://www.52pojie.cn/thread-1334107-1-1.html
+
+- mysql
+
+https://dev.mysql.com/downloads/mysql/
+
+1. 解压后的目录中是没有的 my.ini 文件的，自行添加的 my.ini，写入以下数据
+
+```
+[mysqld]
+
+port=3306
+
+basedir=C:\Program Files\MySQL
+
+datadir=C:\Program Files\MySQL\Data
+
+max_connections=200
+
+max_connect_errors=10
+
+character-set-server=utf8mb4
+
+default-storage-engine=INNODB
+
+#mysql_native_password
+
+default_authentication_plugin=mysql_native_password
+
+[mysql]
+
+default-character-set=utf8mb4
+
+[client]
+
+port=3306
+
+default-character-set=utf8mb4
+```
+
+2. mysqld --initialize --console
+   记住临时密码！！！
+3. mysqld --install mysql
+4. net start mysql
+5. mysql -u root -p
+6. ALTER USER 'root'@'localhost' IDENTIFIED BY '新密码';

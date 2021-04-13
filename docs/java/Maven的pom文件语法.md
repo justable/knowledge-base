@@ -1,5 +1,9 @@
 # Maven 的 pom 文件语法
 
+- relativePath
+
+默认值为../pom.xm，继承父级 pom.xml。
+
 - dependencyManagement 标签
 
 dependencyManagement 只是对依赖包的申明，不会被打包进去。在多模块项目中，dependencyManagement 通常定义在父模块，子模块定义的 dependencies 如果缺省某项属性，就会继承 dependencyManagement 中的属性，比如版本号，这样就可以在父模块中统一管理。
