@@ -20,6 +20,10 @@ Docker Compose 将所管理的容器分为三层，分别是工程（project）�
 
 ## 常用命令
 
+- docker-compose -f docker-compose.yml
+
+指定文件启动
+
 - docker-compose build SERVICE
 
 构建或者重新构建服务，根据 service.build 和 service.image 参数来构建生成对应的镜像
@@ -119,10 +123,10 @@ Builds, (re)creates, starts, and attaches to containers for a service
   - env_file：从指定文件中获取环境变量，优先级低于 environment 参数
   - environment：指定环境变量，可以被程序访问，比如 node 中可以通过 process.env.DB_HOST 访问
   - expose：暴露当前 service 内部端口给需要连接到该 service 的 service，但不暴露给宿主机
-  - external_links：相对于当前 compose 盒子来说的外部容器
+  - external_links：在同个 compose.yml 文件启动的容器可以互相访问，但是不同 compose.yml 启动的容器间需要 external_links 来关联
   - healthcheck：检测当前 service 的健康状况
   - links：关联另一个 service （可以取别名）使得可以和当前 service 交流，但这通常是不需要的，因为 Compose 中的所有 services 默认会在同一个 network 下，可以直接正常交流。这是个遗留参数，未来可能被移除
-  - network_mode：定义 service 的网络模式，有 bridge、host、none
+  - network_mode：定义 service 的网络模式，有 bridge(default)、host、none
   - networks：加入指定网络中，只有处在同一个网络中的 service 才可以互相交流，默认情况下所有 services 都会处在同一个默认网络中
   - ports：暴露端口，HOST_PORT:CONTAINER_PORT 或者单独的 CONTAINER_PORT，HOST_PORT 是给 swarm 等集群使用的，service 间访问的是 CONTAINER_PORT
   - restart：规定 service 的重启策略，支持 no、always、on-failure、unless-stopped 四种模式，默认 no，即永远不重启
@@ -141,6 +145,8 @@ Compose 的 services 默认都会被加到同一个 network 中，不同的 serv
 ## 控制启动序列
 
 当使用 docker-compose 的 services 管理多个容器时，需要考虑容器的启动顺序问题，比如一个 webapp 使用到了 database，那么显然 database 需要先于 webapp 启动并处于就绪状态。在 docker-compose.yml 文件中主要有 depends_on, links, volumes_from, and network_mode: "service:..."这些属性控制容器的启动顺序问题，但都无法保证处于就绪状态。官方建议应该在 appliction 中增加处理所依赖容器未正常运行的诊断代码，就 database 而言就是增加重连机制。如果你不想在代码层面处理这些问题，也可以使用执行包裹脚本的方式解决，具体参考[官方介绍](https://docs.docker.com/compose/startup-order/)。
+
+我觉得可以把能够独立运行的服务配置在一个 docker-compose.yml 中，然后先启动这些服务，参考[这篇博客](https://glory.blog.csdn.net/article/details/113938453)。
 
 ## FAQ
 
@@ -177,3 +183,20 @@ db:
 ```
 
 也可以创建 mongo 镜像的上层镜像，然后在`Dockerfile`中增加`COPY mysetup.js /docker-entrypoint-initdb.d/`即可。
+
+## 如何在程序中访问 docker compose 定义的环境变量
+
+在 docker 或 docker compose 中定义的环境变量会在服务启动时传递给系统的环境变量，所以程序可以直接去访问系统的环境变量。
+
+```
+# Python
+import os
+os.environ.get('HOST', 'HOST')
+
+# Node.js
+process.env.HOST
+
+# Java
+# Java需要在启动时把系统的环境变量传递给Java进程，不然获取不到
+System.getProperty("HOST")
+```

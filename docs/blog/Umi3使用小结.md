@@ -743,6 +743,12 @@ export default {
 
 只会对`import()`语法做 code spliting。
 
+## 环境参数
+
+- get user config failed, undefined does not exist, but process.env.UMI_ENV is set to dev.
+
+当执行`cross-env UMI_ENV=dev umi dev`时报错，需要新增 config.dev.ts 文件，UMI_ENV=dev 时会去读取该文件。如果我们想自定义控制 dev 环境的行为，可以取名为 REACT_APP_ENV。
+
 ## 生态周边
 
 - [Ant Design Pro](https://beta-pro.ant.design/)

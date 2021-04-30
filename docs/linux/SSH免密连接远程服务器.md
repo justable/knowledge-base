@@ -1,9 +1,9 @@
-# SSH 免密连接
+# SSH 免密连接远程服务器
 
 我们希望达到如下效果：
 
 - 在 terminal 中输入`ssh username@host`无需输入密码即可连接远程服务器
-- 如果把上述命令简化成`ssh ali1`这样的别名就更好了
+- 如果把上述命令简化成`ssh aliyun`这样的别名就更好了
 
 执行如下步骤：
 
@@ -12,7 +12,7 @@
 3. 本机新建`~/.ssh/config`文件，配置如下信息即可为命令取别名
 
 ```
-Host ali1
+Host aliyun
     HostName 172.24.67.199
 
     Port 22

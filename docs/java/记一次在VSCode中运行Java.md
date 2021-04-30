@@ -1,10 +1,10 @@
-# 在 VSCode 安装 Java 开发环境
+# 记一次在 VSCode 中运行 Java
 
 > 以 Mac OS 为例
 
 ## 配置过程
 
-> 详见[文章](https://code.visualstudio.com/docs/java/java-tutorial#_settings-for-the-jdk)。
+> 配置过程详见[官方文档](https://code.visualstudio.com/docs/java/java-tutorial#_settings-for-the-jdk)。
 
 1. 安装 Java 在 VSCode 中的扩展包`Java Extension Pack`。
 
@@ -56,7 +56,16 @@
   "java.completion.enabled": true,
   "java.completion.guessMethodArguments": true,
   // 支持同时运行多个java
-  "java.debug.settings.console": "externalTerminal"
+  "java.debug.settings.console": "externalTerminal",
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -javaagent:\"c:\\Users\\12143\\.vscode\\extensions\\gabrielbb.vscode-lombok-1.0.1\\server\\lombok.jar\"",
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "redhat.telemetry.enabled": true,
+  "java.debug.settings.console": "externalTerminal",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
 ```
 
@@ -97,10 +106,14 @@
 
 7. 安装扩展包`Spring Boot Extension Pack`，主要方便 Spring Boot 开发。
 
-8. 按照 Lombok 扩展包，否则无法生产 getter/setter 方法。
+8. 安装 Lombok 扩展包。
 
-> 我们可以通过`⇧⌘P`组合键然后输入`java`查看相关命令。
-> CTRL+SHIFT+O 或 CTRL+SHIFT+V 自动引入依赖包 或 CTRL+. 自动解决问题
+## 默认快捷键
+
+- `⇧⌘P`然后输入`java`查看相关命令
+- ⌘+SHIFT+O 或 ⌘+SHIFT+V 自动引入依赖包
+- ⌘+. 自动解决问题
+- ⌘+F12 进入实现类
 
 以上插件会在 VSCode 的左边新增多个操作区域，请使用 Java Projects 区域管理 Maven，在 Spring Boot Dashboard 会有问题。
 
@@ -112,12 +125,16 @@
 
 ## 格式化 java 代码
 
+安装 prettier 扩展，增加如下配置：
+
 ```json
 {
   "java.format.settings.url": "eclipse-formatter.xml",
   "editor.defaultFormatter": "redhat.java"
 }
 ```
+
+eclipse-formatter.xml 可以通过`⇧⌘P`输入 java: format 生成。
 
 ## 自动 import 依赖包
 

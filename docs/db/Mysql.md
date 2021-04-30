@@ -88,3 +88,9 @@ Navicat 版本过久，mysql8 之前的版本中加密规则是 mysql_native_pas
 ### Specified key was too long; max key length is 767 bytes
 
 在 mysql5.6 版本以下，索引键前缀限制默认为 767byte，且当数据库的字符集为 utf8mb4 时，utf8mb4 规定 4byte 表示一个字符，那么 `varchar(255)=1020>767`，因此报错。当数据库的字符集为 utf8 时，utf8 规定 3byte 表示一个字符，那么 `varchar(255)=765<767`，不会报错。我们可以开启 innodb_large_prefix，这样索引键前缀限制就会变为 3072byte。
+
+## this is incompatible with sql_mode=only_full_group_by
+
+执行`select @@global.sql_mode;`，把结果中的 ONLY_FULL_GROUP_BY 去掉，加到 my.ini 文件的`[mysqld]`下，重启 mysql 服务。
+
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION

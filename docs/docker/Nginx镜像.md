@@ -2,6 +2,33 @@
 
 > [官方镜像](https://hub.docker.com/_/nginx)
 
+## Installation
+
+```sh
+# 拉取镜像
+docker pull nginx
+# 创建并启动容器
+docker run --name prod-nginx -v /usr/local/share/configs/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx
+# 进入容器
+docker exec -it ruoyi_nginx_1 /bin/bash
+```
+
+## Docker Compose
+
+```
+nginx:
+    image: nginx
+    volumes:
+      - ./nginx/conf.d/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/log:/var/log/nginx
+      - ./html:/usr/share/nginx/html/ruoyi-ui
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=tingyur.top
+      - NGINX_PORT=80
+```
+
 ## 常用 docker 命令
 
 - `docker cp tmp-nginx-container:/etc/nginx/nginx.conf /host/path/nginx.conf`
