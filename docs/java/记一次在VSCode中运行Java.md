@@ -92,12 +92,15 @@
 在`/Users/zhuzy/java/apache-maven-3.6.3/conf/settings.xml`加入：
 
 ```xml
-<mirror>
-  <id>aliyunmaven</id>
-  <mirrorOf>*</mirrorOf>
-  <name>阿里云公共仓库</name>
-  <url>https://maven.aliyun.com/repository/public</url>
-</mirror>
+<mirrors>
+  <mirror>
+    <!-- 推荐只配置这个即可 -->
+    <id>aliyun-central</id>
+    <mirrorOf>central</mirrorOf>
+    <name>阿里云central仓库</name>
+    <url>https://maven.aliyun.com/repository/central</url>
+  </mirror>
+</mirrors>
 ```
 
 5. 安装 Tomcat 扩展包`Tomcat for Java`。

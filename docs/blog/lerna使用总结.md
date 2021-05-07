@@ -18,7 +18,8 @@ lerna 是用来管理 monorepos 项目的。当一个源码库包含多个模块
 ## 命令
 
 - lerna init/npx lerna init
-  - --independent
+  - --independent：每个 package 的版本是独立的，lerna.json 的 version 设为 independent。
+  - --exact(default)：每个 package 的版本统一，取 lerna.json 的 version。
 
 初始化 lerna 项目。
 
