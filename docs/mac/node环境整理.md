@@ -74,3 +74,10 @@ brew 的所有安装文件会放在 Cellar 目录下，然后在系统 bin 目�
 - 安装 brew 时出错 Failed during: /usr/local/bin/brew update --force
 
 删除`~/Library/Caches/Homebrew/portable-ruby-2.3.3.leopard_64.bottle.1.tar.gz`重新安装
+
+- git: error
+
+sh -c '/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -find git 2> /dev/null' failed with exit code 35328: (null) (errno=Invalid argument)
+xcode-select: Failed to locate 'git', requesting installation of command line developer tools
+
+执行`sudo xcode-select --switch /Library/Developer/CommandLineTools/`即可。
