@@ -9,7 +9,7 @@
 ```html
 <script src="./hello-world.js">
   <script type="hello-world">
-  	console.log('Hello World')
+    console.log('Hello World')
 </script>
 <script>
   HelloWorld.parse();

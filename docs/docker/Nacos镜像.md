@@ -23,3 +23,5 @@ nacos:
       - mysqldb
     restart: on-failure
 ```
+
+配置参考https://github.com/nacos-group/nacos-docker。

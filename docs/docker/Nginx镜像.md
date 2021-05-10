@@ -10,7 +10,7 @@ docker pull nginx
 # 创建并启动容器
 docker run --name prod-nginx -v /usr/local/share/configs/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx
 # 进入容器
-docker exec -it ruoyi_nginx_1 /bin/bash
+docker exec -it service_nginx /bin/bash
 ```
 
 ## Docker Compose

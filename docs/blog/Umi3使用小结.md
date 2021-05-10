@@ -9,7 +9,9 @@ umi 是一个基于 webpack 的构建工具，它对 react 生态做了收敛，
 > 有些新特性官方文档不会立即更新，可以通过https://github.com/umijs/plugins/tree/master/packages/${pluginName}/src/index.ts了解。
 > 或者浏览[sorrycc 的博客](https://github.com/sorrycc/blog/issues/92)。
 
-- `yarn create @umijs/umi-app`
+执行`yarn create umi myapp`，选择 ant design pro v5。实际会调用[create-umi](https://github.com/umijs/create-umi)来创建项目。如果想要更轻量简单的初始配置，可以使用`yarn create @umijs/umi-app myapp`，实际会调用[@umijs/create-umi-app](https://github.com/umijs/umi/tree/master/packages/create-umi-app#readme)来创建项目。
+
+执行`umi g tmp`可以生成`src/.umi/`文件夹以测试代码可行性。
 
 ## @umijs/preset-react
 
@@ -487,7 +489,7 @@ interface ErrorInfoStructure {
 }
 ```
 
-`@umijs/plugin-request`会自动拦截非 200 接口，把错误信息根据 showType 统一处理，我们无需再为 axios 配置任何的拦截器。如果后台返回的错误信息不符合如上格式，可以通过 errorConfig.adaptor 进行配置，下面的运行时配置会有介绍。
+`@umijs/plugin-request`会自动拦截非 200 接口，把错误信息根据 showType 统一处理？待确定，我们无需再为 axios 配置任何的拦截器。如果后台返回的错误信息不符合如上格式，可以通过 errorConfig.adaptor 进行配置，下面的运行时配置会有介绍。
 
 ### 构建时配置
 
@@ -506,16 +508,79 @@ export default {
 import { RequestConfig } from 'umi';
 export const request: RequestConfig = {
   timeout: 1000,
-  errorConfig: {
-    // umi会根据这里返回的数据决定如何处理错误信息，比如message.warn,message.error等
-    adaptor: resData => {
+  prefix: '/api',
+  requestInterceptors: [
+    (url, options) => {
+      if (getToken()) {
+        // @ts-ignore
+        options.headers['Authorization'] = 'Bearer ' + getToken();
+      }
       return {
-        ...resData,
-        success: resData.ok,
-        errorMessage: resData.message,
+        url,
+        options: { ...options, interceptors: true },
+      };
+    },
+  ],
+  responseInterceptors: [
+    response => {
+      const codeMaps = {
+        502: '网关错误。',
+        503: '服务不可用，服务器暂时过载或维护。',
+        504: '网关超时。',
+      };
+      message.error(codeMaps[response.status]);
+      return response;
+    },
+    async response => {
+      const data = await response.clone().json();
+      if (data && data.code === 401) {
+        message.error('登录状态已过期，请重新登录');
+        removeToken();
+        history.push(loginPath);
+      }
+      return response;
+    },
+  ],
+  errorConfig: {
+    adaptor: (resData, ctx) => {
+      const { code, msg, data } = resData;
+      if (code === 401) {
+        message.error('登录状态已过期，请重新登录');
+        removeToken();
+        history.push(loginPath);
+      }
+      return {
+        success: code === 200,
+        errorCode: code,
+        errorMessage: msg || codeMessage[code],
+        showType: 2,
+        data,
       };
     },
     errorPage: '',
+  },
+  errorHandler: (error: ResponseError) => {
+    // 覆盖默认的errorHandler
+    const { messages } = getIntl(getLocale());
+    const { response } = error;
+
+    if (response && response.status) {
+      const { status, statusText, url } = response;
+      const requestErrorMessage = messages['app.request.error'];
+      const errorMessage = `${requestErrorMessage} ${status}: ${url}`;
+      const errorDescription = messages[`app.request.${status}`] || statusText;
+      notification.error({
+        message: errorMessage,
+        description: errorDescription,
+      });
+    }
+    if (!response) {
+      notification.error({
+        description: '您的网络发生异常，无法连接服务器',
+        message: '网络异常',
+      });
+    }
+    throw error;
   },
   middlewares: [
     async function middlewareA(ctx, next) {
@@ -540,36 +605,28 @@ export const request: RequestConfig = {
       }
     },
   ],
-  requestInterceptors: [
-    (url, options) => {
-      return {
-        url: `${url}&interceptors=yes`,
-        options: { ...options, interceptors: true },
-      };
-    },
-  ],
-  responseInterceptors: [
-    response => {
-      const codeMaps = {
-        502: '网关错误。',
-        503: '服务不可用，服务器暂时过载或维护。',
-        504: '网关超时。',
-      };
-      message.error(codeMaps[response.status]);
-      return response;
-    },
-    async response => {
-      const data = await response.clone().json();
-      if (data && data.NOT_LOGIN) {
-        location.href = '登录url';
-      }
-      return response;
-    },
-  ],
 };
 ```
 
+要想知道上述配置的执行原理，可以在`.umi/plugin-request/request.ts`查看，以下是部分代码：
+
+```js
+// 230行
+const errorInfo = errorAdaptor(resData, ctx);
+if (errorInfo.success === false) {
+  // 抛出错误到 errorHandler 中处理
+  const error: RequestError = new Error(errorInfo.errorMessage);
+  error.name = 'BizError';
+  error.data = resData;
+  error.info = errorInfo;
+}
+```
+
+我们可以在 errorConfig.adaptor 自定义返回 errorInfo，默认的 errorHandler 方法中会获取 errorInfo 并作相关处理，比如自动错误弹框（见 155 行），我们也可以覆盖默认的 errorHandler 配置。在接口调用处最好 trycatch 捕获错误，未捕获的错误在开发模式中会进入错误栈界面。
+
 除了 errorConfig 和 middlewares 以外其它配置都是直接透传 umi-request 的全局配置，所以想知道都支持哪些配置可以直接参考 umi-request 的全局配置。
+
+总结下，如果后端选择了自定义状态码（总是返回 200 的情况），我们可以在 errorConfig.adaptor 中适配错误信息（只需返回 success=false 就会进入 errorHandler）；如果后端选择了原生 http 状态码，我们可以在 responseInterceptors 中处理错误信息，umi 自动会处理 http 状态码不为 200 的情况进入 errorHandler 吗？待确定。
 
 ### 代码案例
 
@@ -747,7 +804,7 @@ export default {
 
 - get user config failed, undefined does not exist, but process.env.UMI_ENV is set to dev.
 
-当执行`cross-env UMI_ENV=dev umi dev`时报错，需要新增 config.dev.ts 文件，UMI_ENV=dev 时会去读取该文件。如果我们想自定义控制 dev 环境的行为，可以取名为 REACT_APP_ENV。
+当执行`cross-env UMI_ENV=dev umi dev`时报错，需要新增 config.dev.ts 文件，UMI_ENV=dev 时会去读取该文件。如果我们想自定义控制 dev 环境的行为，可以取名为 REACT_APP_ENV，当然也可以直接使用 UMI_ENV。
 
 ## 生态周边
 

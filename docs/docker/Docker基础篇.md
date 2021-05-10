@@ -22,28 +22,6 @@ volumes 方案中，数据卷 volume 是独立于容器层的存储机制，它�
 
 bind mounts 方案和 volumes 方案不同地方在于，它挂载的存储点是自定义的宿主机的绝对路径，无法通过 docker cli 命令管理它。
 
-## Docker 的网络通讯模型
-
-什么是 bridge 模式，host 模式，`-p`后发生了什么，什么是网桥
-以后再补，涉及太多计算机网络的知识点，现在 hold 不住。
-
-[待阅读之 Docker](../unread/待阅读之Docker.md)
-
-### bridge(default)
-
-> https://docs.docker.com/network/bridge/
-> Bridge networks apply to containers running on the same Docker daemon host. For communication among containers running on different Docker daemon hosts, you can either manage routing at the OS level, or you can use an overlay network.
-
-容器通过桥接的方式连接宿主网络，此时容器的端口和宿主端口是互相独立的，处在同一个桥接网络下的容器才可以互相访问交流。通过配置容器内端口和宿主端口的映射关系使得容器与外部网络访问畅通。
-
-### host
-
-容器会与宿主机共用端口号，容器内可以直接访问外部网络。
-
-### none
-
-容器无法连接网络。
-
 ## Docker Compose
 
 Docker Compose 是 docker 提供的一个命令行工具，用来定义和运行由多个容器组成的应用。使用 compose，我们可以通过 YAML 文件声明式的定义应用程序的各个服务，并由单个命令完成应用的创建和启动。
@@ -195,6 +173,26 @@ ENTRYPOINT 中的命令会在 `docker run` 时执行，如果`docker run [custom
 - `docker rm $(docker ps -a | grep "Exited" | awk '{print $1 }')`
 
 移除匹配项容器
+
+- docker inspect containerId
+
+查看容器虚拟 IP 地址
+
+- docker network ls
+
+列出容器所处的网络
+
+- docker network inspect network_name
+
+查看该 network 下都有哪些 container
+
+- docker container inspect containerId/containerName
+
+查看指定 container 的信息
+
+- docker network create -d bridge web_common
+
+创建网络
 
 ## 提交本地镜像到 dockerhub
 

@@ -10,3 +10,5 @@
 1. 对接口数据的裁剪和聚合编排。
 
 https://cloud.tencent.com/developer/news/197687
+https://www.infoq.cn/article/MCT64UZhXxRcvYpVMZoD
+http://blog.yuqiyu.com/bff-first-meet.html

@@ -20,7 +20,7 @@ Docker Compose 将所管理的容器分为三层，分别是工程（project）�
 
 ## 常用命令
 
-- docker-compose -f docker-compose.yml
+- docker-compose -f docker-compose.yml up
 
 指定文件启动
 
@@ -113,6 +113,7 @@ Builds, (re)creates, starts, and attaches to containers for a service
 
 - version：指定 docker-compose.yml 文件的写法格式版本，不同版本的参数集合不同
 - services：多个容器集合
+  - hostname: 指定域名，系统默认会生成随机值作为域名
   - build：指定一个路径，生成该 service 的镜像，也可以是个对象。如果同时配置了 image 参数，则 Compose 会根据 image 参数为 build 生成的镜像命名
   - image：指定当前服务的镜像，如果同时存在 build 参数，则以 build 为准
   - container_name：自定义容器名称，默认 Compose 会自动创建唯一的名称
@@ -124,6 +125,9 @@ Builds, (re)creates, starts, and attaches to containers for a service
   - environment：指定环境变量，可以被程序访问，比如 node 中可以通过 process.env.DB_HOST 访问
   - expose：暴露当前 service 内部端口给需要连接到该 service 的 service，但不暴露给宿主机
   - external_links：在同个 compose.yml 文件启动的容器可以互相访问，但是不同 compose.yml 启动的容器间需要 external_links 来关联
+  - extra_hosts:
+    - "somehost:162.242.195.82"
+    - "otherhost:50.31.209.229"
   - healthcheck：检测当前 service 的健康状况
   - links：关联另一个 service （可以取别名）使得可以和当前 service 交流，但这通常是不需要的，因为 Compose 中的所有 services 默认会在同一个 network 下，可以直接正常交流。这是个遗留参数，未来可能被移除
   - network_mode：定义 service 的网络模式，有 bridge(default)、host、none
@@ -133,6 +137,20 @@ Builds, (re)creates, starts, and attaches to containers for a service
   - volumes：规定当前 service 的挂载数据卷，HOST_PATH/VOLUME_NAME:CONTAINER_PATH 或者单独的 CONTAINER_PATH（匿名数据卷，VOLUME_NAME 自动生成），当指定 VOLUME_NAME 时，也就是具名数据卷必须在顶层 volumes 参数中定义 name（会使用已存在的数据卷）
 - volumes：顶层数据卷配置，多个 services 可以使用同个数据卷达到共享的效果
 - networks：创建自定义网络
+
+```yml
+# 创建网络
+networks:
+  web_common_network:
+```
+
+```yml
+# 使用已存在的网络
+networks:
+  web_common_network:
+    external: true
+    name: my-app-net
+```
 
 ## Compose 中的 Network
 
@@ -148,55 +166,6 @@ Compose 的 services 默认都会被加到同一个 network 中，不同的 serv
 
 我觉得可以把能够独立运行的服务配置在一个 docker-compose.yml 中，然后先启动这些服务，参考[这篇博客](https://glory.blog.csdn.net/article/details/113938453)。
 
-## FAQ
-
-- 执行`docker-compose up`时提示无法连接数据库
-
-当后台服务需要连接数据库时，则要求数据库处于就绪状态，但仅依靠 depends_on 只是保证优先启动数据库并保证处于就绪状态。我们可以使用`docker-compose up --no-start`先 build 出镜像和创建容器但不启动，那么就不会报错，然后手动执行`docker-compose start db`先启动数据库再启动后台服务就可以了。
-
-另外要注意后台服务连接数据库的代码中不能使用 localhost 来连接，应该替换为`docker-compose.yml`配置的 service 名称
-
-- 新创建的数据卷不存在后台服务连接的库表
-
-第一次构建 Compose 时创建了新的数据卷，假如后台服务连接的是 virus 库表，但这在新的数据卷是不存在的，需要我们执行`docker-compose exec db /bin/bash`进入容器内部手动创建 virus 表（有没有更好的自动化方法呢？）。
-
-- docker-compose up 成功后依然无法访问后台 node 服务
-
-node 服务的 Dockerfile 文件 expose 的端口要与 node server 的监听端口一致，比如 eggjs 默认监听 7001 端口，若 expose 9002 端口，并且-p 9002:9002，则无法访问 localhost:9002 服务，必须把 9002 都改成 7001。
-
-- 动态设置 node 服务连接的数据库
-
-依靠`docker-compose.yml`文件的 environment 环境变量设置，比如`DB_HOST=db`，然后在 node 服务程序中通过`process.env.DB_HOST`获取。
-
-- 如何在数据库容器启动后做初始化工作
-
-当一个数据库容器被启动后，通常需要进行初始化工作，比如创建新库表、创建账号、插入初始化数据等等，这里以 MongoDB 为例，MongoDB 的官方镜像合并了一个[PR 特性](https://github.com/docker-library/mongo/pull/145)，使得容器在安装 mongo 并且`/data/db`目录为空时，会执行一次`/docker-entrypoint-initdb.d/`下的 sh 文件或 js 文件进行初始化工作，默认会在 test 库表执行初始化工作，因为 test 是 MongoDB 的默认库表，也可以在`docker-compose.yml`中指定 MONGO_INITDB_DATABASE 这个环境变量作为执行库表，还指出 MONGO_INITDB_ROOT_USERNAME、MONGO_INITDB_ROOT_USERNAME 等环境变量。
-
-我们可以在`docker-compose.yml`增加以下配置：
-
-```yml
-db:
-  environment:
-    - MONGO_INITDB_DATABASE=virus
-  volumes:
-    - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 ```
 
-也可以创建 mongo 镜像的上层镜像，然后在`Dockerfile`中增加`COPY mysetup.js /docker-entrypoint-initdb.d/`即可。
-
-## 如何在程序中访问 docker compose 定义的环境变量
-
-在 docker 或 docker compose 中定义的环境变量会在服务启动时传递给系统的环境变量，所以程序可以直接去访问系统的环境变量。
-
-```
-# Python
-import os
-os.environ.get('HOST', 'HOST')
-
-# Node.js
-process.env.HOST
-
-# Java
-# Java需要在启动时把系统的环境变量传递给Java进程，不然获取不到
-System.getProperty("HOST")
 ```
