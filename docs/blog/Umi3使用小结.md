@@ -667,6 +667,43 @@ export default () => {
 };
 ```
 
+## @umijs/plugin-openapi
+
+可以根据后端的 swagger 文档一键生成 services,mocks 目录
+
+```ts
+export default {
+  openAPI: [
+    // {
+    //   requestLibPath: "import { request } from 'umi'",
+    //   // 或者使用在线的版本
+    //   // schemaPath: "https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json"
+    //   schemaPath: join(__dirname, 'oneapi.json'),
+    //   mock: false,
+    // },
+    {
+      requestLibPath: "import { request } from 'umi'",
+      schemaPath: join(__dirname, 'openapi-system.json'),
+      projectName: 'system',
+      mock: false,
+    },
+    // {
+    //   requestLibPath: "import { request } from 'umi'",
+    //   schemaPath: 'https://gw.alipayobjects.com/os/antfincdn/CA1dOm%2631B/openapi.json',
+    //   projectName: 'swagger',
+    // },
+    // {
+    //   requestLibPath: "import { request } from 'umi'",
+    //   schemaPath: 'http://localhost:8080/system/v2/api-docs',
+    //   projectName: 'system',
+    //   mock: true,
+    // },
+  ],
+};
+```
+
+执行`umi openapi`即可。
+
 ## 使用多页面和构建预渲染
 
 配置如下：

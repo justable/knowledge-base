@@ -34,11 +34,10 @@ CREATE TABLE role (
 	role_id BIGINT ( 20 ) NOT NULL auto_increment COMMENT '角色ID',
 	role_name VARCHAR ( 30 ) NOT NULL COMMENT '角色名称',
 	role_key VARCHAR ( 100 ) NOT NULL COMMENT '角色权限字符串',
-  data_scope CHAR ( 1 ) NOT NULL DEFAULT '1' COMMENT '数据范围',
 	PRIMARY KEY ( role_id )
 )
-INSERT INTO role VALUES (1,'超级管理员','admin','1');
-INSERT INTO role VALUES (2,'销售','saler','2');
+INSERT INTO role VALUES (1,'超级管理员','admin');
+INSERT INTO role VALUES (2,'销售','saler');
 
 -- 角色与菜单关联表
 CREATE TABLE role_menu (

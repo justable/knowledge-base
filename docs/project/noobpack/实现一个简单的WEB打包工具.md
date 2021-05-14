@@ -2,7 +2,7 @@
 
 ## 引言
 
-我们平时的前端项目开发中，使用得最多的打包工具就是 Webpack 了，它的功能非常强大：
+提到 WEB 打包工具，第一个想到的就是 Webpack 了，它的功能非常强大：
 
 1. 能够合并分散的模块化文件，生成可直接在浏览器运行的文件；
 1. 支持 tree shaking，能够剔除没有使用到的代码；
@@ -11,13 +11,130 @@
 1. 支持各类`xxx-webpack-plugin`，能够在 webpack 编译打包的各个钩子函数中进行扩展；
 1. ......
 
+不管 Webpack 实现有多复杂，它的初衷其实很简单，就是“将工程化结构的代码打包成浏览器中可以直接运行的代码”。本文就是讲述如何实现这么一个最基本的 WEB 打包工具。
+
 作为一个日常项目开发中频繁使用的工具，对它背后的实现原理进行探索，一来可以锻炼我们的编程思维，二来有助于理解 webpack 繁多的配置选项。
 
 本文主要实现上述的第一项，即「能够合并分散的模块化文件，生成可直接在浏览器运行的文件」，其实只是想实战一下[浅谈 JS 中的 AST](https://www.yuque.com/tingyur/yldon0/qxyk7a)一文中谈到的 AST，因为打包时会利用 AST 进行依赖分析 😊。
 
 ## 实现目标
 
-读取配置文件的 entry 选项，分析 entry 中的入口文件的依赖，把入口文件所有的依赖打包到一个文件中，最终根据 output 选项输出可直接在浏览器中运行的文件。
+我们要将下面这个例子打包成一个直接可在浏览器运行的文件。
+
+配置文件：
+
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: {
+    pageA: './pages/pageA.js',
+  },
+  output: {
+    path: __dirname,
+    filename: '[name].js',
+  },
+};
+```
+
+pageA.js：
+
+```javascript
+import add from './add.js';
+
+const button = document.getElementsByTagName('button')[0];
+const inputs = document.getElementsByTagName('input');
+const result = document.getElementsByTagName('span')[0];
+button.onclick = function() {
+  result.textContent = add(inputs[0].value, inputs[1].value);
+};
+```
+
+add.js：
+
+```javascript
+import log from './log.js';
+
+export default function(a, b) {
+  log('executing add function');
+  return Number(a) + Number(b);
+}
+```
+
+log.js：
+
+```javascript
+export default function(text) {
+  console.log(text);
+}
+```
+
+这个例子中的依赖关系是 pageA.js->add.js->log.js。
+
+## 实现过程
+
+一切以入口文件为起点，先把入口文件经过 parser 处理，将 ES6 语法转为 ES5，并得到自身的下游依赖（通过 AST 对语法进行分析得到），同理对下游依赖文件也依次经过 parser 处理，最终把每个文件包装成对象放进数组，一个数组就代表一条依赖链，每个文件对象格式如下所示：
+
+```typescript
+interface FileInfo {
+  // 文件的路径
+  path: string;
+  // 下游依赖文件的路径数组
+  deps: string[];
+  // 转换后的ES5代码
+  code: string;
+}
+```
+
+我们希望最终在浏览器运行的代码结构是这样的：
+
+```javascript
+(function(modules) {
+  // The module cache
+  var installedModules = {};
+
+  // The require function
+  function require(moduleId) {
+    // Check if module is in cache
+    if (installedModules[moduleId]) {
+      return installedModules[moduleId].exports;
+    }
+
+    // Create a new module (and put it into the cache)
+    var module = (installedModules[moduleId] = {
+      i: moduleId,
+      l: false,
+      exports: {},
+    });
+
+    // Execute the module function
+    modules[moduleId].call(module.exports, module, module.exports, require);
+
+    // Flag the module as loaded
+    module.l = true;
+
+    // Return the exports of the module
+    return module.exports;
+  }
+
+  // Load entry module and return exports
+  return require('./pageA.js');
+})({
+  './pageA.js': function(module, exports, require) {
+    var _add = require('./add.js');
+    // do something
+  },
+  './add.js': function(module, exports, require) {
+    var _log = require('./log.js');
+    // do something
+  },
+  './log.js': function(module, exports, require) {
+    // do something
+  },
+});
+```
+
+其实上面这段代码就是一个简易的 Webpack 运行时文件。我们已经拥有了表示依赖链的文件对象数组，那么我们现在只需要将依赖链数组转换成以 path 为 key，code 包裹在函数体中为 value 的对象，就如上述代码结构那般，最终将这个文件按照 output 配置输出即可。
 
 ## 开始动手
 

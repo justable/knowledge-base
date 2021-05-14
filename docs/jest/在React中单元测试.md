@@ -147,8 +147,6 @@ afterAll(() => {
 
 > [官方文档](https://testing-library.com/docs/dom-testing-library/intro)
 
-###
-
 ### queries
 
 部署在 screen 对象上，其实就是提供了一系列查询 document.body 节点的接口，前提是测试用例都是 mount 到全局 document.body 的，[官方文档](https://testing-library.com/docs/dom-testing-library/api-queries)，[screen 源码](https://github.com/testing-library/dom-testing-library/blob/master/src/screen.js)。

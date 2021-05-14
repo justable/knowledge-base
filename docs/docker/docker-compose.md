@@ -164,8 +164,7 @@ Compose 的 services 默认都会被加到同一个 network 中，不同的 serv
 
 当使用 docker-compose 的 services 管理多个容器时，需要考虑容器的启动顺序问题，比如一个 webapp 使用到了 database，那么显然 database 需要先于 webapp 启动并处于就绪状态。在 docker-compose.yml 文件中主要有 depends_on, links, volumes_from, and network_mode: "service:..."这些属性控制容器的启动顺序问题，但都无法保证处于就绪状态。官方建议应该在 appliction 中增加处理所依赖容器未正常运行的诊断代码，就 database 而言就是增加重连机制。如果你不想在代码层面处理这些问题，也可以使用执行包裹脚本的方式解决，具体参考[官方介绍](https://docs.docker.com/compose/startup-order/)。
 
+可以通过[wait-for-it](https://github.com/vishnubob/wait-for-it)处理这问题。
+
 我觉得可以把能够独立运行的服务配置在一个 docker-compose.yml 中，然后先启动这些服务，参考[这篇博客](https://glory.blog.csdn.net/article/details/113938453)。
-
-```
-
-```
+https://segmentfault.com/q/1010000039985559

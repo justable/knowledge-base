@@ -12,3 +12,4 @@
 https://cloud.tencent.com/developer/news/197687
 https://www.infoq.cn/article/MCT64UZhXxRcvYpVMZoD
 http://blog.yuqiyu.com/bff-first-meet.html
+http://www.ayqy.net/blog/backend-for-frontend-bff/
