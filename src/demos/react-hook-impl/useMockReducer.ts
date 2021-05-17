@@ -16,12 +16,14 @@ function useMockReducer(reducer: Function, initArg: any, init?: Function) {
   const [mockRender] = useMockRender();
   let current: WorkHook = nextWorkHook;
   if (typeof current.memoriedState === 'undefined') {
+    // 第一次渲染
     let initState = initArg;
     if (typeof init === 'function') {
       initState = init(initArg);
     }
     current.memoriedState = initState;
   }
+  // 链表结构向后移一格
   current.next = nextWorkHook = current.next
     ? current.next
     : { memoriedState: undefined, next: undefined };
