@@ -843,6 +843,10 @@ export default {
 
 当执行`cross-env UMI_ENV=dev umi dev`时报错，需要新增 config.dev.ts 文件，UMI_ENV=dev 时会去读取该文件。如果我们想自定义控制 dev 环境的行为，可以取名为 REACT_APP_ENV，当然也可以直接使用 UMI_ENV。
 
+## 环境变量
+
+Umi 中约定根目录下的 .env 为环境变量配置文件。然后在配置文件中定义 define 使其暴露在运行时中，注意运行时中不要通过 process.env.XXX 访问，直接 XXX 访问就可以了。
+
 ## 生态周边
 
 - [Ant Design Pro](https://beta-pro.ant.design/)
@@ -852,3 +856,7 @@ export default {
 - [dumi](https://github.com/umijs/dumi)是一个 React 组件文档生成器
 - [father](https://github.com/umijs/father)是 rollup 的上层封装，便于写 library
 - [qiankun](https://github.com/umijs/qiankun)是一个微前端框架
+
+## 参考
+
+https://help.aliyun.com/learn/learningpath/oss.html?spm=5176.10695662.5694434980.6.188e5ad3iP0lBh
