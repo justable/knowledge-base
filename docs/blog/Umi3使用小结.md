@@ -857,6 +857,10 @@ Umi 中约定根目录下的 .env 为环境变量配置文件。然后在配置�
 - [father](https://github.com/umijs/father)是 rollup 的上层封装，便于写 library
 - [qiankun](https://github.com/umijs/qiankun)是一个微前端框架
 
+## FAQ
+
+- 在使用`@umijs/plugin-layout`时，我在 app.tsx 中配置了菜单动态获取，设置了 login 界面的 layout=false，但是在 login 界面依然会触发菜单动态获取
+
 ## 参考
 
 https://help.aliyun.com/learn/learningpath/oss.html?spm=5176.10695662.5694434980.6.188e5ad3iP0lBh

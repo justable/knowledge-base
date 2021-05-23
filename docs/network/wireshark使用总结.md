@@ -10,6 +10,13 @@
 
 tcp、udp、arp、icmp、http、smtp、ftp、dns、msnms、ip、ssl、oicq、bootp
 
+### follow tcp stream
+
+```sh
+# 这里的4只是wireshark给tcp流的一个编号。tcp流是可以用一对(ip,port)来限定的
+tcp.stream eq 4
+```
+
 ### 过滤 IP
 
 ```sh
@@ -66,3 +73,12 @@ http.content_length == 279
 # 过滤HTTP/1.1版本的http包，包括请求和响应
 http.request.version == "HTTP/1.1"
 ```
+
+## 抓取 HTTPS 明文包
+
+通常在抓取 HTTPS 包时会 Protocol 栏会显示 TLS，在 Info 栏中显示 Application Data，这应该是 Wireshark 通过数据包的信息来显示 Protocol 的，http 是 TLS 的上层协议，数据包经过 TLS 层后已经加密过了，无法从数据包中分析出 HTTP 关键字。
+
+https://segmentfault.com/a/1190000023568902?utm_source=tag-newest
+
+1. 通过网站的私钥：如果你想抓取的网站是你自己的，那么可以利用这种方式，因为这需要使用网站生成证书使用的私钥进行解密，就是那个 nginx 上配置的 ssl_certificate_key 对应的私钥文件，把它添加到 wireshark 配置中。不过这种方法貌似只支持 TLS 加密套件类型是 RSA 的情况，不支持 ECDHE 等。
+2. 通过浏览器的 SSL 日志功能：目前该方案只支持 Chrome 和 Firefox 浏览器，通过设置 SSLKEYLOGFILE 环境变量，可以指定浏览器在访问 SSL/TLS 网站时将对应的密钥保存到本地文件中，有了这个日志文件之后 wireshake 就可以将报文进行解密了。

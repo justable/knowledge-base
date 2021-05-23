@@ -32,6 +32,8 @@
 下图是通过本地 Chrome 浏览器访问个人服务器的一个静态页面的完整数据包：
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/467908/1621684019260-7b158965-06be-4919-ab93-91b6659ca588.png#clientId=ude7bb4e5-58b4-4&from=paste&height=324&id=ua9c1830e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=324&originWidth=1239&originalType=binary&size=66288&status=done&style=none&taskId=u0c998720-0744-407c-b022-a1b08171d8b&width=1239)
 
+> 下文中，对称加密称为密钥，不对成加密成为公钥和私钥。
+
 ### TCP 的三次握手
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/467908/1621685113987-140ed0ff-af4f-4655-95fa-57401e9f7711.png#clientId=u6374b4fb-5569-4&from=paste&height=66&id=u79071bb2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=66&originWidth=1242&originalType=binary&size=14717&status=done&style=none&taskId=u135f8d4d-31d8-466f-a71c-36e85a70c91&width=1242)

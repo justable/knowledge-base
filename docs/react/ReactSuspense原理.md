@@ -4,7 +4,7 @@
 
 Suspense 通过包裹异步组件，使得在异步组件加载时显示 loading 动画，加载完毕后再渲染异步组件。使用形式如下所示：
 
-```jsx
+```jsx | pure
 const OtherComponent = React.lazy(() => import('./OtherComponent'));
 function MyComponent() {
   return (
@@ -29,7 +29,7 @@ function MyComponent() {
 
 MockSuspense：
 
-```jsx
+```jsx | pure
 class MockSuspense extends React.Component {
   constructor(props) {
     super(props);
@@ -95,7 +95,7 @@ export default wrapPromise;
 
 App：
 
-```jsx
+```jsx | pure
 import React from 'react';
 import ReactDOM from 'react-dom';
 import wrapPromise from './wrapPromise';

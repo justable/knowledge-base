@@ -25,7 +25,7 @@ Hook 出现以后，上面的问题都解决了，并且赋予了 functional 组
 
 假如有如下组件：
 
-```jsx
+```jsx | pure
 const Person = () => {
   const [name, setName] = useState('');
   const [age, setAge] = useState(0);
@@ -57,7 +57,7 @@ const hook = {
 
 但是有个问题是自己写的 useMockState 无法触发 React 的 rerender，所以我这里取巧写了个 useMockRender 来触发 React rerender：
 
-```jsx
+```jsx | pure
 import { useState } from 'react';
 
 function useMockRender() {
@@ -70,7 +70,7 @@ export default useMockRender;
 
 下面是 useMockState 的实现了：
 
-```jsx
+```jsx | pure
 let firstWorkHook = {
   memoriedState: undefined,
   next: undefined,
@@ -111,7 +111,7 @@ function useMockReducer(reducer, initArg, init) {
 
 接下来我们可以写个组件来测试下这个 useMockState：
 
-```jsx
+```jsx | pure
 const MockCounter = () => {
   let [name, setName] = useMockState('计数器');
   return (

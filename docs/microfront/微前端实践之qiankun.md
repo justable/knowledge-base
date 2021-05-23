@@ -98,7 +98,7 @@ function start(opts = {}) {
 
 例一：使用 entry 字符串，qiankun 会把子应用的 html 模版文件作为 prop.container 传给子应用。
 
-```jsx
+```jsx | pure
 /* 主应用 */
 registerMicroApps([
   {
@@ -120,7 +120,7 @@ export async function mount(props) {
 
 例二：使用 entry 对象，不指定 html。
 
-```jsx
+```jsx | pure
 /* 主应用 */
 registerMicroApps([
   {
@@ -143,7 +143,7 @@ export async function mount(props) {
 
 例三：使用 entry 对象，指定 html。
 
-```jsx
+```jsx | pure
 /* 主应用 */
 registerMicroApps([
   {
@@ -167,7 +167,7 @@ export async function mount(props) {
 
 例四：子应用动态创建 container，不推荐。
 
-```jsx
+```jsx | pure
 /* 主应用 */
 registerMicroApps([
   {

@@ -33,7 +33,7 @@
 - ISN：Initial sequence number，初始序列号。
 - ACK：acknowledgement 确认信号，1 表示接收成功，0 表示没有接收，通常第一次发送时为 0 或者接收失败时为 0。
 - ack：ack=上一次对方最后一个报文段 A 的 seq 值+ A 的数据部分长度 TCP Payload Len（数据包总长度），这样规定一方面是可以证明我方接收的数据是完整的，另一方面是告知对方下次发送的第一个报文段头部的 seq 值设置为该值。占 4 字节。[TCP Payload 和 TCP segment 的区别](https://ask.wireshark.org/question/3498/what-is-the-difference-between-tcp-payload-and-tcp-segment-data/?answer=3512#post-id-3512)。TCP Payload = TCP 头部（即被协议解析消耗掉的部分）+ TCP Segment？【标记点一】
-- seq：表示的是当前 TCP 报文段的第一个字节在此次 HTTP 报文数据流所处的位置，这样对方才能按照顺序重组报文分包。它占 4 字节，序号增加到 2^32-1 后，下个序号又回到 0。
+- seq：表示的是当前 TCP 报文段的第一个字节在此次 HTTP 报文数据流所处的位置，这样对方才能按照顺序重组报文分包。它占 4 字节，序号增加到 2^32-1 后，下个序号又回到 0。TCP 数据包中的序列号（Sequence Number）不是以报文分段来进行编号的，而是将连接生存周期内传输的所有数据当作一个字节流，序列号就是整个字节流中每个字节的编号。
 - FIN：finish 结束。
 - RST：reset 重置。
 - MSL：是 Maximum Segment Lifetime 的缩写，表示报文在网络中的最大生存时间，通常为 120 秒。
@@ -95,4 +95,6 @@ TCP 协议是靠 Seq 验证数据完整性的，所以标记点一的说法是�
 
 - Wireshark 抓包时，多个连续的 TCP 报文段，会出现第一个 TCP 包的 Len=0，这是什么包？
 
-这是 ACK 包，用来应答对方的上次请求的，ACK 包都单独一个 TCP 报文段。在 Wireshark 抓包结果中，每次的交互信息对方都会回复一个 ACK 包，表示应答一次对方的 TCP 数据流。
+这是 ACK 包，用来应答对方的上次请求的，ACK 包都单独一个 TCP 报文段。在 TCP 中，每个数据分包接收方都会回复一个 ACK 包，哪怕都是重复的，保证通信的健壮性。TCP 提供的确认机制，可以在通信过程中不对每一个 TCP 数据包发出单独的 ACK 包（Delayed ACK 机制），而是在传送数据时，顺便把 ACK 信息传出，这样可以大大提高网络的利用率和传输效率。
+
+- HTTP/2 的若干新特性，对于 TCP 协议来讲有感知吗？比如 HTTP/2 的二进制分帧，多个帧之间可以乱序发送，根据帧首部的流标识可以重新组装。
