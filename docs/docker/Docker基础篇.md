@@ -80,7 +80,7 @@ ENTRYPOINT 中的命令会在 `docker run` 时执行，如果`docker run [custom
 
 ## 缩减打包镜像体积
 
-- 使用 node 的 alpine 版本，关于 alpine 版本的解释参考[这里](https://www.v2ex.com/t/581888)
+- 使用 node 的 alpine 版本，关于 alpine 版本的解释参考[这里](https://www.v2ex.com/t/581888)，有个副作用是容器没有/bin/bash，无法进入容器
 - 增加 `.dockerigonre` 文件
 - 将构建期的依赖放到 devDependencies 中，并使用 npm install --production，就不会打包 devDependencies 中的依赖
 

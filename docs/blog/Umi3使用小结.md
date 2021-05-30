@@ -349,6 +349,8 @@ function DemoPage() {
 
 如果想要一探究竟 umi 是怎么封装的，可以查看.umi/plugin-layout/layout/index.tsx。
 
+[使用@umijs/plugin-layout 动态获取菜单异常](https://github.com/umijs/plugins/issues/616)
+
 ## @umijs/plugin-locale
 
 基于 react-intl 库，规定 src/locales/目录下存放国际化文件。
@@ -704,6 +706,8 @@ export default {
 
 执行`umi openapi`即可。
 
+[openapi 插件只支持解析 3.0 版本的吗？](https://github.com/umijs/plugins/issues/607)
+
 ## 使用多页面和构建预渲染
 
 配置如下：
@@ -859,7 +863,56 @@ Umi 中约定根目录下的 .env 为环境变量配置文件。然后在配置�
 
 ## FAQ
 
-- 在使用`@umijs/plugin-layout`时，我在 app.tsx 中配置了菜单动态获取，设置了 login 界面的 layout=false，但是在 login 界面依然会触发菜单动态获取
+我的期待：有个获取动态菜单的接口，我希望在登录成功后自动获取，并配合 ProLayout 完成渲染。
+我的做法：在使用`@umijs/plugin-layout`时，我在 app.tsx 中配置了菜单动态获取，比如：
+
+```tsx
+export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  return {
+    menu: {
+      request: async () => {
+        try {
+          return await getMenus();
+        } catch (error) {
+          return [];
+        }
+      },
+    },
+  };
+};
+```
+
+然后在 routes 文件中配置登录界面 `layout: false`，不希望登录界面调用该接口：
+
+```js
+export default [
+  {
+    path: '/user',
+    layout: false,
+    routes: [
+      {
+        path: '/user/login',
+        component: './user/Login',
+      },
+    ],
+  },
+];
+```
+
+实际状况：在登录界面就发起了菜单接口请求，导致接口异常。
+
+@ant-design/pro-layout：6.17.1
+@umijs/plugin-layout：0.15.0
+umi:3.4.15
+
+### 运行时配置 base 和 publicPath
+
+```js
+// base
+window.routerBase = 'xxx';
+// publicPath
+__webpack_public_path__ = 'xxx';
+```
 
 ## 参考
 

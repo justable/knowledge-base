@@ -101,3 +101,13 @@ React Router 将 hash 方案和 history 方案一同封装到了 [history 库](h
 接着再通过 React Context 将 state 状态向子组件传递，子组件就能访问路由信息了。
 
 最后，有任何业务代码中发起了路由变更，即调用了 history.push 或 history.replace 接口，都会触发`history.listen(dispatch)`，从而促使组件 rerender，至此整个路由逻辑就产生了闭环。
+
+## 基于配置的路由
+
+[react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config)
+
+## 注意事项
+
+- history 模式刷新页面
+
+基于 Webpack 本地运行时，需要配置 devServer.historyApiFallback = true；基于 nginx 运行时，需要把所有页面都代理到首页。

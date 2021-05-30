@@ -68,6 +68,14 @@ function start(opts = {}) {
 
 ## 已知问题
 
+### 请问微前端架构中，如何存储当前用户信息？比如单体项目登录后一般会存在 redux 中，那在微前端中，登录模块也被分离成了单独的子应用，登录后如何在多个子应用共享用户信息？
+
+这其实是个 GlobalState 共享问题，可以直接使用 [redux](https://github.com/yuki070/qiankun-redux) 或者通过 initGlobalState 初始化再由子应用通过 onGlobalState 获取，可以参考https://github.com/umijs/qiankun/pull/729，会有很大启发。
+
+### 运行时依赖去重
+
+可以考虑基于 import-maps
+
 ### 应用依赖共享问题
 
 [https://github.com/umijs/qiankun/issues/172](https://github.com/umijs/qiankun/issues/172)
@@ -209,7 +217,53 @@ export async function mount(props) {
 
 如果希望分离登录模块、整体布局模块（菜单栏和头部和内容区）、各子应用，这里有个关键问题是，登录模块不需要整体布局模块，各子应用需要内嵌在整体布局模块的内容区，也有可能存在不需要整体布局模块的子应用。
 
-几种思路（个人采用第三种思路）：
+qiankun 的挂载模式不同于 single-spa 的 append 到 body 中，而是选择挂载点，那么要分两种情况来看：
+
+1. 主应用是简单的静态页面
+2. 主应用是个单页应用
+
+single-spa 只能是第一种情况，qiankun 则都可以，不过更建议使用单页应用，否则很难控制 sidebar 的显隐，因为动态显隐对于用户来说页面会出现闪动（除非像 single-spa 一样把 sidebar 也分离出去由 activeRule 来控制显隐）。
+
+下面谈谈 qiankun 主应用是单页应用的设计思路。假如路由为：
+
+```js
+const routes = [
+  {
+    path: '/login',
+    component: '@/pages/Login',
+  },
+  {
+    path: '/layoutAChildren',
+    component: '@/pages/LayoutWithMenu',
+    routes: [
+      {
+        path: 'projectA',
+      },
+      {
+        path: 'projectB',
+      },
+    ],
+  },
+  {
+    path: '/layoutBChildren',
+    component: '@/pages/LayoutWithMenu',
+    routes: [
+      {
+        path: 'projectC',
+      },
+      {
+        path: 'projectD',
+      },
+    ],
+  },
+];
+```
+
+那么可以设置 projectA 的 activeRule 为`/layoutAChildren/projectA`，以此类推。
+
+可以参考[如何在主应用的某个路由页面加载微应用](https://qiankun.umijs.org/zh/faq#%E5%A6%82%E4%BD%95%E5%9C%A8%E4%B8%BB%E5%BA%94%E7%94%A8%E7%9A%84%E6%9F%90%E4%B8%AA%E8%B7%AF%E7%94%B1%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%BE%AE%E5%BA%94%E7%94%A8)。
+
+下面谈谈 qiankun 主应用是静态页面的几种思路：
 
 1. 采用 single-spa 的各子应用之间是兄弟关系的策略，主应用只是作为注册中心。qiankun 是可以指定具体挂载点的（single-spa 因为各子应用只能默认 append 到 body 中，所以需要把 siderbar 或 header 做成 fixed，再依靠子应用的 margin 来协调整体的展示），我们只需把结构性布局转移到主应用上，在模版文件中设计好模块的插槽位置，把 siderbar 和 header 也当作单个子应用分离出去，最后依靠微应用框架的 activeRule 来控制显示哪个模块。
 
@@ -256,6 +310,47 @@ export async function mount(props) {
     <div id="content"></div>
   </div>
 </body>
+```
+
+### 关于子系统的热重载问题
+
+https://github.com/umijs/qiankun/issues/830
+
+### 如果挂载点被组件状态给卸载了是否会造成意想不到的后果
+
+应该是的。
+
+首先要讲一下，在 react 中使用 qiankun 时，挂载点被 qiankun 填充了子应用的页面结构后，会造成真实 dom 树与 react 内部存储的节点树不一致，也就是 react 中的 Uncontrolled Components 概念，不知道这会在 react 做重绘 diff 时产生什么副作用（是指 react 重绘时把 qiankun 挂载的子应用给 delete 掉了）。个人基于对 react 渲染原理的理解推断，react 在做 diff 时是对比的新老 fiber 树，而不是对比的真实 dom，因此只要不出现是基于 Controlled Components 并且会造成挂载点 children 重绘的操作，像什么引起挂载点 props 改变的操作是不会使 react 感知到并产生副作用的，或者使用 React.memo 或 PureComponent 创建挂载点。
+
+官方指出挂载点可以是动态的某个路由下的节点，通过 activeRule 控制即可，我们知道路由变更是会导致挂载点被销毁的，那么挂载点下的子应用页面也会跟着被销毁，不过由于此种情况 qiankun 是可以通过 activeRule 来推断挂载点的销毁时机的，因此 qiankun 可以选择做一些弥补副作用的措施，具体做了什么我不清楚，但是如果挂载点是被组件内部状态的变更所卸载，这对 qiankun 而言是无从感知的，因此肯定不会做出弥补副作用的措施？
+
+官网上有个关于挂载点是在动态子路由中的案例解读，很奇怪 vue 和 react 为什么情况不同？vue 需要在挂载点所处的那个组件的 mounted 钩子中执行 start()来重新启动子应用，而 react 不需要。反而 vue 的情况更让人理解，是因为 vue 和 react 的重绘机制不同？还是 qiankun 对于两种框架做了不同的处理？打算在 qiankun 的 issue 里提个问题问问官方，[discussions/1475](https://github.com/umijs/qiankun/discussions/1475)。
+
+已知情况：qiankun 是通过子应用提供的 mount 和 unmount 来控制子应用的挂载与卸载的。
+
+八九不离十的推测：主应用是 Vue+Vue Router 时，采用的是 import()异步加载，所以需要在 mounted 中 start()。
+
+```js
+const routes = [
+  {
+    path: '/portal/*',
+    name: 'portal',
+    component: () => import('../views/Portal.vue'),
+  },
+];
+```
+
+```js
+// 挂载点所处的页面
+import { start } from 'qiankun';
+export default {
+  mounted() {
+    if (!window.qiankunStarted) {
+      window.qiankunStarted = true;
+      start();
+    }
+  },
+};
 ```
 
 ## 参考

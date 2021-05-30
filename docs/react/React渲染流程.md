@@ -451,6 +451,8 @@ function commitMutationEffectsImpl() {
 
 TODO...
 
+- React.memo 或 PureComponent 会在遍历节点树时对 props 属性做浅对比，如果引用没有改变就跳过 children 的重绘。那么没有使用 React.memo 或 PureComponent 时，props 即使没有改变也会重绘 children，但 react 在重绘时的 diff 步骤发现 children 根本没有变化，那么 children 就不会被销毁重建。
+
 ## 总结
 
 React 的渲染机制是比较复杂的，如果要扣细节真的很头大，作为框架使用者，只需要在心中存有整体的运作流程图，日常开发中出了问题时，能够在流程图中初略找到位置，再去调试源码了解细节，并做好笔记补充到流程图上，而不必一口气把心中的流程图画的很详细。
