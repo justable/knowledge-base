@@ -790,6 +790,7 @@ app.use(async (ctx, next) => {
     const { html, error, rootContainer } = await render({
       basename: config.ssr.basename,
       path: ctx.request.url,
+      // 开启流式传输
       mode: 'stream',
     });
     if (error) {
