@@ -749,45 +749,73 @@ export default {
 此时会生成 umi.server.js，然后在服务端使用它：
 
 ```js
-// Express
-app.use(async (req, res) => {
-  // 或者从 CDN 上下载到 server 端
-  // const serverPath = await downloadServerBundle('http://cdn.com/bar/umi.server.js');
-  const render = require('./dist/umi.server');
-  res.setHeader('Content-Type', 'text/html');
+// Koa
+const staticPath = path.resolve(__dirname, config.ssr.path);
+app.use(
+  compress({
+    threshold: 2048,
+    gzip: {
+      flush: require('zlib').constants.Z_SYNC_FLUSH,
+    },
+    deflate: {
+      flush: require('zlib').constants.Z_SYNC_FLUSH,
+    },
+    br: false, // 禁用br解决https gzip不生效加载缓慢问题
+  }),
+);
 
-  const context = {};
-  const { html, error, rootContainer } = await render({
-    // 有需要可带上 query
-    path: req.url,
-    context,
+let render: IServerRender;
+app.use(async (ctx, next) => {
+  /**
+   *  扩展global对象
+   *
+   *  这里是在服务端处理好cookie，
+   *  会把所有cookie处理成{}形式
+   *  赋值到global上面，方便客户端使用
+   *
+   *  同时获取浏览器的默认语言，处理好
+   */
+  // @ts-ignore
+  global._cookies = parseCookie(ctx);
+  // @ts-ignore
+  global._navigatorLang = parseNavLang(ctx);
 
-    // 可自定义 html 模板
-    // htmlTemplate: defaultHtml,
+  const ext = path.extname(ctx.request.path);
+  // 符合要求的路由才进行服务端渲染，否则走静态文件逻辑
+  if (!ext) {
+    if (!render) {
+      render = require(path.join(staticPath, 'umi.server.js'));
+    }
 
-    // 启用流式渲染
-    // mode: 'stream',
-
-    // html 片段静态标记（适用于静态站点生成）
-    // staticMarkup: false,
-
-    // 扩展 getInitialProps 在服务端渲染中的参数
-    // getInitialPropsCtx: {},
-
-    // manifest，正常情况下不需要
-  });
-
-  // support stream content
-  if (content instanceof Stream) {
-    html.pipe(res);
-    html.on('end', function() {
-      res.end();
+    const { html, error, rootContainer } = await render({
+      basename: config.ssr.basename,
+      path: ctx.request.url,
+      mode: 'stream',
     });
+    if (error) {
+      console.log('----------------服务端报错-------------------', error);
+      ctx.throw(500, error);
+    } else {
+      ctx.status = 200;
+      ctx.type = 'text/html';
+    }
+    if (html instanceof Stream) {
+      // 流渲染
+      // ctx.type = 'application/octet-stream';
+      ctx.body = html.on('error', ctx.onerror).pipe(new PassThrough());
+    } else {
+      ctx.body = html;
+    }
   } else {
-    res.send(res);
+    await next();
   }
 });
+
+app.use(mount(`/${config.ssr.basename}`, require('koa-static')(staticPath)));
 ```
+
+目前有两个 bug，不能同时使用 ssr 和 hash，如果 root 节点有子节点就不会服务端渲染。
+https://github.com/umijs/umi/issues/6653
 
 ## 按需加载资源
 

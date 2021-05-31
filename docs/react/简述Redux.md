@@ -27,6 +27,8 @@ class Redux {
 }
 ```
 
+它本质是基于 pub/sub 模式，先注册 reducer 作为状态变更逻辑，接着订阅回调函数，redux 会在每次状态变更后执行回调函数，最后使用 dispatch 发起状态变更信号就可以达成闭环了。
+
 在 React 应用中，通常由 react-redux 帮我们完成回调函数的订阅，react-redux v7 之前需要使用 connect 连接组件，组件内才能访问 redux 状态，其本质是基于高阶组件，讲数据通过 props 向下传递；v7 后直接可以通过`useSelector`这个 hook 访问 redux 状态，这应该是 v7 版本后 react-redux 通过了 React Context 自上向下传递数据流，并通过 react 内置的 useContext 接收数据。
 
 下面是个不和 react 绑定使用的例子：

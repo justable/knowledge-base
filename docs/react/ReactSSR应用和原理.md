@@ -79,10 +79,18 @@ export default () => {
 ## umi3 的 ssr 配置
 
 - 第一次请求会报 navigator is not defined，再刷新一次就好了；
+
+根据报错指示的行列信息找到 umi.server.js 对应的报错点，vscode 支持行列搜索
+
 - umi3 的配置文件配置 dynamic 参数后，实际请求的资源地址没有 chunk 指纹，但 build 生成的资源是有 chunk 指纹的，导致 404;
+
 - 由于我的资源是挂载在二级路由下的，nodejs 这边是否需要额外配置 router 的 base 参数？我暂时配了 basename 参数，但没在官网找到相关说明。我在.umirc 中是已经配置了 base 参数的；
 - 如果我希望匹配的路径进入 ssr 渲染，其余静态资源直接托管 nginx 转发，应该怎么做？即替代上述代码的 koa-static 处。
 
 ## Koa 的流响应
 
 https://github.com/koajs/koa/pull/612
+
+React.hybirdRender()
+
+isBrowser()

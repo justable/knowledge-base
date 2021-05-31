@@ -16,6 +16,10 @@
 
 ## 访问安全
 
+ALIYUN_ID=LTAI5tCfdp6y899UPYK6mNkq
+ALIYUN_SECRET=tuAjPUj4tNOybc8DvkR6TY9HWkMdNd
+ALIYUN_USER=tingyu@1487899462153358.onaliyun.com
+
 由于阿里云账号 AccessKey 拥有所有 API 访问权限，建议遵循阿里云安全最佳实践。如果部署在服务端可以使用 RAM 用户或 STS 来进行 API 访问或日常运维管控操作，如果部署在客户端请使用 STS 方式来进行 API 访问。
 
 为了安全考虑，建议不要使用主账号的 AccessKey，可以在[RAM 访问控制](https://ram.console.aliyun.com/users)创建子账号，并只授权子账号进行 API 访问（这样子账号无法登录控制台），别忘了将指定的 Bucket 授权给子账号，否则访问不了。
