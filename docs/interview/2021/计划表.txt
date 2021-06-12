@@ -1,11 +1,8 @@
-3. ssr案例，流式传输，部署到服务器上，写一篇博客（2天）
 4. Taro案例，博客
 5. webpack5
-10. wireshark 分析https过程 小胡子哥微博
-11. OSS文件存储
-12. 单点登录
 13. 基于spring security的接口权限 
 14. 第三方授权登录
-15. vite工作原理
 
-中建三局后台管理系统，小程序端
+nodejs事件模型和js的区别
+umi那些plugin的原理
+请求到容器 servlet之后

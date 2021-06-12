@@ -10,7 +10,21 @@
 
 ## 问答
 
-### 有哪些印象深刻的场景
+- 对 umi 做了怎么样的思考
+
+收敛 中间代码 提供特殊功能 UmiContext.Provider
+
+- access 组件 权限控制
+
+和路由配合，通过 hook 获取权限，Access 组件 fallback 特性，没使用 umi 之前，也会把 accesss 组件像这样分装`return <>{accessible ? children : fallback}</>`
+
+- Concurrent 模式（必讲）
+- 基于权限的部门员工组件
+- @人，实时拍照生成头像 base64
+- 一开始没用任何开源组件库基础组件都是公司内部写的，维护成本太大
+- dva 背后是 saga，saga 基于 generator 函数，taker 注册信号（阻塞消耗型，fork），dispatch 触发信号，任务容器监听到信号就 next，当前注册信号被消耗，因此通常 while(true)
+
+## 有哪些印象深刻的场景
 
 - 登录
 

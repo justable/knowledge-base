@@ -25,9 +25,9 @@ if (import.meta.hot) {
 }
 ```
 
-当浏览器发起资源请求，分析该次资源的依赖链，寻找 HMR boundary，HMR boundary 是指调用了 import.meta.hot API 的文件，如果没有找到则认为是 dead end，触发页面重载；如果找到了则只进行局部热更新，热更新的逻辑取决于在 import.meta.hot 中的逻辑。CSS 的更新则简单很多，只需修改对应 link 标签 href 的时间戳来重新获取资源即可。
+当浏览器发起资源请求，分析该次资源的依赖链，寻找 HMR boundary，HMR boundary 是指调用了 import.meta.hot API 的文件，如果没有找到则认为是 dead end，触发**页面重载**；如果找到了则只进行 **JS 局部更新**，热更新的逻辑取决于在 import.meta.hot 中的逻辑;**CSS 更新**则简单很多，只需修改对应 link 标签 href 的时间戳来重新获取资源即可。
 
-触发热更新的时机是，监听到代码文件发生变化，服务器通过 websocket 发送信号到浏览器的运行时文件，继而进行按场景处理更新逻辑。
+触发热更新的时机是监听到代码文件发生变化那一刻，服务器通过 websocket 发送信号到浏览器的运行时文件，继而按上述不同场景处理热更新逻辑。
 
 ## 我的问题
 
