@@ -17,7 +17,7 @@
 ## 访问安全
 
 ALIYUN_ID=LTAI5tCfdp6y8ALIYUN_ID99UPYK6mNkq
-ALIYUN_SECRET=tuAjPUj4tNOybc8DALIYUN_SECRETvkR6TY9HWkMdNd
+ALIYUN_SECRET=tuAjPUj4tALIYUN_SECRETNOybc8DALIYUN_SECRETvkR6TY9HWkMdNd
 ALIYUN_USER=tingyu@1487899462ALIYUN_USER153358.onaliyun.com
 
 由于阿里云账号 AccessKey 拥有所有 API 访问权限，建议遵循阿里云安全最佳实践。如果部署在服务端可以使用 RAM 用户或 STS 来进行 API 访问或日常运维管控操作，如果部署在客户端请使用 STS 方式来进行 API 访问。

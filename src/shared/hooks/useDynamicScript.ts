@@ -7,7 +7,7 @@ export default function useDynamicScript(url: string, globalName: string) {
     if (source) return;
     const script = document.createElement('script');
     script.src = url;
-    script.onload = function() {
+    script.onload = function () {
       //@ts-ignore
       setSource(() => window[globalName]);
     };
